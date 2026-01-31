@@ -4,6 +4,7 @@ const User = require('../models/User');
 const Customer = require('../models/Customer');
 const Worker = require('../models/Worker');
 const { body, validationResult } = require('express-validator');
+const { uploadProfilePicture } = require('../middleware/upload');
 
 // @route   POST /api/auth/register
 // @desc    Register a new user
@@ -189,6 +190,60 @@ router.get('/profile', async (req, res) => {
     } catch (error) {
         console.error('Profile fetch error:', error);
         res.status(500).json({ success: false, error: 'Server error' });
+    }
+});
+
+// @route   PUT /api/auth/profile
+// @desc    Update user profile
+// @access  Private
+router.put('/profile', uploadProfilePicture.single('profileImage'), async (req, res) => {
+    try {
+        if (!req.session || !req.session.user_id) {
+            return res.status(401).json({ success: false, error: 'Not authenticated' });
+        }
+
+        const userId = req.session.user_id;
+        const updateData = {};
+
+        // Update text fields if provided
+        if (req.body.firstName) updateData.firstName = req.body.firstName.trim();
+        if (req.body.lastName) updateData.lastName = req.body.lastName.trim();
+
+        // Handle profile image upload
+        if (req.file) {
+            updateData.profileImage = `/uploads/${req.file.filename}`;
+        }
+
+        // Update user
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { $set: updateData },
+            { new: true, runValidators: true }
+        );
+
+        if (!user) {
+            return res.status(404).json({ success: false, error: 'User not found' });
+        }
+
+        // Update session if name changed
+        if (updateData.firstName) {
+            req.session.firstName = user.firstName;
+        }
+
+        res.json({
+            success: true,
+            message: 'Profile updated successfully',
+            user: {
+                id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                profileImage: user.profileImage
+            }
+        });
+    } catch (error) {
+        console.error('Profile update error:', error);
+        res.status(500).json({ success: false, error: 'Server error updating profile' });
     }
 });
 

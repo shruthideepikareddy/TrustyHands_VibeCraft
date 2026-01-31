@@ -3,7 +3,7 @@ const session = require('express-session');
 const cors = require('cors');
 const path = require('path');
 const multer = require('multer');
-require('dotenv').config();
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 const connectDB = require('./config/database');
 const { attachUserData } = require('./middleware/auth');
