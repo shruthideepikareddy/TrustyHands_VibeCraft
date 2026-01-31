@@ -523,7 +523,7 @@
                                 <div class="upload-zone" onclick="document.getElementById('idUp').click()">
                                     <i class="fas fa-id-badge"></i>
                                     <p id="idName">Click to upload ID photo</p>
-                                    <input type="file" id="idUp" style="display:none" required>
+                                    <input type="file" id="idUp" style="display:none">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -531,7 +531,7 @@
                                 <div class="upload-zone" onclick="document.getElementById('faceUp').click()">
                                     <i class="fas fa-camera"></i>
                                     <p id="faceName">Professional face photo</p>
-                                    <input type="file" id="faceUp" style="display:none" required>
+                                    <input type="file" id="faceUp" style="display:none">
                                 </div>
                             </div>
                         </div>
@@ -712,6 +712,12 @@
         // 3. Final Submission
         document.getElementById('onboardingForm').onsubmit = (e) => {
             e.preventDefault();
+
+            // Manual validation for Step 3 files
+            if (!document.getElementById('idUp').files[0] || !document.getElementById('faceUp').files[0]) {
+                alert("Please upload both your ID proof and profile photo to continue.");
+                return;
+            }
 
             // Save Data
             workerStore.name = document.getElementById('fName').value;
