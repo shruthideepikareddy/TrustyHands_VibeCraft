@@ -299,7 +299,7 @@
         .service-item {
             border: 1.5px solid var(--border);
             border-radius: 16px;
-            padding: 15px 10px;
+            padding: 12px 10px;
             text-align: center;
             cursor: pointer;
             transition: var(--transition);
@@ -308,9 +308,14 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            height: 100px;
-            /* Fixed height for consistency in grid */
+            gap: 6px;
+            min-height: 110px;
+            /* Allow height to adjust for price */
+        }
+        
+        .service-item small {
+            font-size: 0.7rem;
+            margin-top: 2px;
         }
 
         .service-item:hover {
@@ -737,81 +742,100 @@
                         </div>
 
                         <div class="services-list" id="servicesList">
-                            <div class="service-item" data-value="Plumbing Services">
+                            <div class="service-item" data-value="Plumbing Services" data-price="599">
                                 <i class="fas fa-faucet"></i>
                                 <span>Plumbing</span>
+                                <small style="color: var(--primary); font-weight: 600;">₹599</small>
                             </div>
-                            <div class="service-item" data-value="Electrical Work">
+                            <div class="service-item" data-value="Electrical Work" data-price="699">
                                 <i class="fas fa-bolt"></i>
                                 <span>Electrical</span>
+                                <small style="color: var(--primary); font-weight: 600;">₹699</small>
                             </div>
-                            <div class="service-item" data-value="Deep Cleaning">
+                            <div class="service-item" data-value="Deep Cleaning" data-price="899">
                                 <i class="fas fa-broom"></i>
                                 <span>Cleaning</span>
+                                <small style="color: var(--primary); font-weight: 600;">₹899</small>
                             </div>
-                            <div class="service-item" data-value="Carpentry">
+                            <div class="service-item" data-value="Carpentry" data-price="799">
                                 <i class="fas fa-hammer"></i>
                                 <span>Carpentry</span>
+                                <small style="color: var(--primary); font-weight: 600;">₹799</small>
                             </div>
-                            <div class="service-item" data-value="Painting Services">
+                            <div class="service-item" data-value="Painting Services" data-price="1299">
                                 <i class="fas fa-paint-roller"></i>
                                 <span>Painting</span>
+                                <small style="color: var(--primary); font-weight: 600;">₹1299</small>
                             </div>
-                            <div class="service-item" data-value="AC Service">
+                            <div class="service-item" data-value="AC Service" data-price="799">
                                 <i class="fas fa-wind"></i>
                                 <span>AC Services</span>
+                                <small style="color: var(--primary); font-weight: 600;">₹799</small>
                             </div>
-                            <div class="service-item" data-value="Packers & Movers">
+                            <div class="service-item" data-value="Packers & Movers" data-price="1999">
                                 <i class="fas fa-boxes"></i>
                                 <span>Moving</span>
+                                <small style="color: var(--primary); font-weight: 600;">₹1999</small>
                             </div>
-                            <div class="service-item" data-value="Kitchen Cleaning">
+                            <div class="service-item" data-value="Kitchen Cleaning" data-price="599">
                                 <i class="fas fa-utensils"></i>
                                 <span>Kitchen</span>
+                                <small style="color: var(--primary); font-weight: 600;">₹599</small>
                             </div>
-                            <div class="service-item" data-value="Event Staffing">
+                            <div class="service-item" data-value="Event Staffing" data-price="1499">
                                 <i class="fas fa-glass-cheers"></i>
                                 <span>Events</span>
+                                <small style="color: var(--primary); font-weight: 600;">₹1499</small>
                             </div>
-                            <div class="service-item" data-value="Home Sanitization">
+                            <div class="service-item" data-value="Home Sanitization" data-price="999">
                                 <i class="fas fa-hand-sparkles"></i>
                                 <span>Sanitization</span>
+                                <small style="color: var(--primary); font-weight: 600;">₹999</small>
                             </div>
-                            <div class="service-item" data-value="Babysitting">
+                            <div class="service-item" data-value="Babysitting" data-price="499">
                                 <i class="fas fa-baby"></i>
                                 <span>Babysitting</span>
+                                <small style="color: var(--primary); font-weight: 600;">₹499</small>
                             </div>
-                            <div class="service-item" data-value="Gardening Services">
+                            <div class="service-item" data-value="Gardening Services" data-price="699">
                                 <i class="fas fa-leaf"></i>
                                 <span>Gardening</span>
+                                <small style="color: var(--primary); font-weight: 600;">₹699</small>
                             </div>
-                            <div class="service-item" data-value="Bathroom Cleaning">
+                            <div class="service-item" data-value="Bathroom Cleaning" data-price="599">
                                 <i class="fas fa-shower"></i>
                                 <span>Bathroom</span>
+                                <small style="color: var(--primary); font-weight: 600;">₹599</small>
                             </div>
-                            <div class="service-item" data-value="Fridge Repair">
+                            <div class="service-item" data-value="Fridge Repair" data-price="899">
                                 <i class="fas fa-snowflake"></i>
                                 <span>Fridge</span>
+                                <small style="color: var(--primary); font-weight: 600;">₹899</small>
                             </div>
-                            <div class="service-item" data-value="TV Repair">
+                            <div class="service-item" data-value="TV Repair" data-price="799">
                                 <i class="fas fa-tv"></i>
                                 <span>TV Repair</span>
+                                <small style="color: var(--primary); font-weight: 600;">₹799</small>
                             </div>
-                            <div class="service-item" data-value="Cook Services">
+                            <div class="service-item" data-value="Cook Services" data-price="999">
                                 <i class="fas fa-utensils"></i>
                                 <span>Cooks</span>
+                                <small style="color: var(--primary); font-weight: 600;">₹999</small>
                             </div>
-                            <div class="service-item" data-value="Washing Machine Repair">
+                            <div class="service-item" data-value="Washing Machine Repair" data-price="899">
                                 <i class="fas fa-soap"></i>
                                 <span>Washing</span>
+                                <small style="color: var(--primary); font-weight: 600;">₹899</small>
                             </div>
-                            <div class="service-item" data-value="Car Detailing">
+                            <div class="service-item" data-value="Car Detailing" data-price="1299">
                                 <i class="fas fa-car"></i>
                                 <span>Car Detailing</span>
+                                <small style="color: var(--primary); font-weight: 600;">₹1299</small>
                             </div>
                         </div>
                         <input type="hidden" name="service" id="selectedService">
-                        <div class="error-msg" id="serviceError">Please select a service category to continue.</div>
+                        <input type="hidden" name="services" id="selectedServices">
+                        <div class="error-msg" id="serviceError">Please select at least one service to continue.</div>
                     </div>
 
                     <!-- Step 2: Booking Details -->
@@ -1010,6 +1034,7 @@
         const totalSteps = 4;
         let selectedWorker = null;
         let bookingId = null;
+        let selectedServices = []; // Array to store multiple selected services
 
         // Form elements
         const form = document.getElementById('bookingForm');
@@ -1017,18 +1042,46 @@
         const prevBtn = document.getElementById('prevBtn');
         const submitBtn = document.getElementById('submitBtn');
 
-        // Step 1: Service Selection
+        // Step 1: Service Selection (Multiple Selection)
         function initServiceSelection() {
             document.querySelectorAll('.service-item').forEach(item => {
                 item.addEventListener('click', () => {
-                    document.querySelectorAll('.service-item').forEach(i => i.classList.remove('selected'));
-                    item.classList.add('selected');
-                    document.getElementById('selectedService').value = item.dataset.value;
+                    const serviceValue = item.dataset.value;
+                    const servicePrice = parseFloat(item.dataset.price) || 0;
+                    const serviceIndex = selectedServices.findIndex(s => s.value === serviceValue);
+                    
+                    if (serviceIndex > -1) {
+                        // Deselect if already selected
+                        item.classList.remove('selected');
+                        selectedServices.splice(serviceIndex, 1);
+                    } else {
+                        // Select if not selected
+                        item.classList.add('selected');
+                        selectedServices.push({
+                            value: serviceValue,
+                            price: servicePrice
+                        });
+                    }
+                    
+                    // Update hidden inputs
+                    updateServiceInputs();
                     document.getElementById('serviceError').style.display = 'none';
                     updateSummary();
                 });
             });
         }
+        
+        function updateServiceInputs() {
+            // For backward compatibility, set first service as main service
+            if (selectedServices.length > 0) {
+                document.getElementById('selectedService').value = selectedServices[0].value;
+            } else {
+                document.getElementById('selectedService').value = '';
+            }
+            // Store all services as JSON
+            document.getElementById('selectedServices').value = JSON.stringify(selectedServices);
+        }
+        
         initServiceSelection();
 
         // Service Search
@@ -1156,7 +1209,7 @@
             document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
 
             if (step === 1) {
-                if (!document.getElementById('selectedService').value) {
+                if (selectedServices.length === 0) {
                     document.getElementById('serviceError').style.display = 'block';
                     isValid = false;
                 }
@@ -1198,11 +1251,29 @@
         }
 
         async function saveAndSearch() {
+            // Ensure service inputs are up to date
+            updateServiceInputs();
+            
             const formData = new FormData(form);
             nextBtn.disabled = true;
             nextBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Finding workers...';
 
             try {
+                // 2. Search for workers (use first selected service for search)
+                const service = selectedServices.length > 0 ? selectedServices[0].value : formData.get('service');
+                const city = formData.get('city');
+
+                // Validate service and city
+                if (!service) {
+                    throw new Error('Please select at least one service to continue.');
+                }
+                if (!city) {
+                    throw new Error('Please enter your city to search for workers.');
+                }
+
+                // Ensure service is set in formData for booking creation
+                formData.set('service', service);
+
                 // 1. (Optional) Create Initial Booking in Backend if possible
                 try {
                     const response = await fetch('/api/bookings', {
@@ -1216,20 +1287,31 @@
                     console.log("Backend offline, continuing with local search only.");
                 }
 
-                // 2. Search for workers
-                const service = formData.get('service');
-                const city = formData.get('city');
+                // Validate service and city
+                if (!service) {
+                    throw new Error('Please select at least one service to continue.');
+                }
+                if (!city) {
+                    throw new Error('Please enter your city to search for workers.');
+                }
 
                 let allWorkers = [];
 
                 // A. Try API search
                 try {
-                    const wResp = await fetch(`/api/workers/search?service=${encodeURIComponent(service)}&location=${encodeURIComponent(city)}`, {
+                    const wResp = await fetch(`/api/workers/search?service=${encodeURIComponent(service)}&city=${encodeURIComponent(city)}`, {
                         credentials: 'include'
                     });
+                    if (!wResp.ok) {
+                        const errorData = await wResp.json().catch(() => ({}));
+                        throw new Error(errorData.error || `Server error: ${wResp.status}`);
+                    }
                     const wData = await wResp.json();
                     if (wData.workers) allWorkers = [...wData.workers];
-                } catch (e) { console.warn("API Worker search failed"); }
+                } catch (e) { 
+                    console.warn("API Worker search failed:", e.message);
+                    // Continue with local workers only
+                }
 
                 // B. Add LocalStorage Approved Workers (Fuzzy & Cross-City Filter)
                 const localApproved = JSON.parse(localStorage.getItem('approvedWorkers') || '[]');
@@ -1273,7 +1355,7 @@
 
                 allWorkers = [...allWorkers, ...filteredLocal];
 
-                renderWorkers(allWorkers);
+                renderWorkers(allWorkers, service);
                 goToStep(4);
             } catch (err) {
                 alert('Error: ' + err.message);
@@ -1283,16 +1365,18 @@
             }
         }
 
-        function renderWorkers(workers) {
+        function renderWorkers(workers, serviceName = '') {
             const container = document.getElementById('workersList');
             container.innerHTML = '';
 
             if (workers.length === 0) {
+                // Get service name from selectedServices if not provided
+                const displayService = serviceName || (selectedServices.length > 0 ? selectedServices[0].value : 'the selected service');
                 container.innerHTML = `
                     <div style="text-align: center; padding: 40px; border: 1px dashed var(--border); border-radius: 15px; width: 100%;">
                         <i class="fas fa-user-slash" style="font-size: 2.5rem; color: #ddd; margin-bottom: 15px; display: block;"></i>
                         <h4 style="color: var(--primary-dark); margin-bottom: 8px;">No Professionals Found</h4>
-                        <p style="font-size: 0.9rem; color: var(--text-light); line-height: 1.4;">We couldn't find any approved workers for <strong>${service}</strong> at the moment.<br>
+                        <p style="font-size: 0.9rem; color: var(--text-light); line-height: 1.4;">We couldn't find any approved workers for <strong>${displayService}</strong> at the moment.<br>
                         Please ensure you have <strong>approved</strong> a worker with this skill in the admin panel.</p>
                     </div>
                 `;
@@ -1373,24 +1457,35 @@
         });
 
         function updateSummary() {
-            const service = document.getElementById('selectedService').value;
             const date = document.getElementById('bookingDate').value;
             const time = document.getElementById('selectedTimeSlot').value;
             const container = document.getElementById('summaryContent');
 
-            if (!service) return;
+            if (selectedServices.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-light); font-size: 0.85rem;">Select a service to see details.</p>';
+                document.getElementById('totalAmount').textContent = '₹--';
+                return;
+            }
 
-            // Simplified pricing logic for professional feel
-            const basePrice = 499; // Demo price
-            document.getElementById('totalAmount').textContent = '₹' + basePrice;
+            // Calculate total price
+            const totalPrice = selectedServices.reduce((sum, service) => sum + service.price, 0);
+            document.getElementById('totalAmount').textContent = '₹' + totalPrice;
+
+            // Build services list HTML
+            let servicesHTML = '';
+            selectedServices.forEach((service, index) => {
+                servicesHTML += `
+                    <div class="summary-item" style="margin-bottom: ${index < selectedServices.length - 1 ? '8px' : '12px'};">
+                        <span class="summary-label">${service.value}</span>
+                        <span class="summary-value">₹${service.price}</span>
+                    </div>
+                `;
+            });
 
             container.innerHTML = `
-                <div class="summary-item">
-                    <span class="summary-label">Service</span>
-                    <span class="summary-value">${service}</span>
-                </div>
+                ${servicesHTML}
                 ${date ? `
-                <div class="summary-item">
+                <div class="summary-item" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
                     <span class="summary-label">Date</span>
                     <span class="summary-value">${new Date(date).toLocaleDateString()}</span>
                 </div>` : ''}
