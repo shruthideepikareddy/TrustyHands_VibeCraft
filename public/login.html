@@ -620,7 +620,22 @@
         document.getElementById('signin-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
+
+            // --- ADMIN LOGIN BYPASS ---
+            if (email === "admin@trustyhands.com") {
+                if (password === "admin123") {
+                    sessionStorage.setItem('adminLoggedIn', 'true');
+                    window.location.href = '/admin-dashboard.html';
+                    return;
+                } else {
+                    showErrors(["Incorrect Administrative Access Key."]);
+                    return;
+                }
+            }
+            // ---------------------------
+
             if (password.length < 8) {
                 showErrors(["Password must be at least 8 characters long."]);
                 return;
@@ -632,8 +647,8 @@
             submitBtn.disabled = true;
 
             const data = {
-                email: document.getElementById('loginEmail').value,
-                password: document.getElementById('loginPassword').value
+                email: email,
+                password: password
             };
 
             const result = await api.post('/api/auth/login', data);

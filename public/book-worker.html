@@ -1231,18 +1231,45 @@
                     if (wData.workers) allWorkers = [...wData.workers];
                 } catch (e) { console.warn("API Worker search failed"); }
 
-                // B. Add LocalStorage Approved Workers (Filter by service and city)
+                // B. Add LocalStorage Approved Workers (Fuzzy & Cross-City Filter)
                 const localApproved = JSON.parse(localStorage.getItem('approvedWorkers') || '[]');
-                const filteredLocal = localApproved.filter(w =>
-                    w.service.toLowerCase() === service.toLowerCase() &&
-                    w.city.toLowerCase() === city.toLowerCase()
-                ).map(w => ({
-                    _id: w.id,
-                    full_name: w.name,
-                    profile_picture_path: w.photo || 'https://via.placeholder.com/150',
-                    rating: '5.0',
-                    experience: 'Expert'
-                }));
+
+                const getMatchScore = (w) => {
+                    const wS = (w.service || "").toLowerCase().trim();
+                    const sS = (service || "").toLowerCase().trim();
+                    const wC = (w.city || "").toLowerCase().trim();
+                    const sC = (city || "").toLowerCase().trim();
+
+                    // 1. Service Match (Priority)
+                    const keywords = ['plumb', 'electr', 'clean', 'carpent', 'paint', 'ac ', 'fridge', 'wash', 'cook', 'staff', 'mover'];
+                    let serviceMatch = false;
+                    for (const k of keywords) {
+                        if (wS.includes(k) && sS.includes(k)) { serviceMatch = true; break; }
+                    }
+                    if (!serviceMatch) serviceMatch = wS.includes(sS) || sS.includes(wS);
+
+                    if (!serviceMatch) return 0; // Must match service
+
+                    // 2. City Match
+                    const cityMatch = wC.includes(sC) || sC.includes(wC);
+
+                    if (cityMatch) return 2; // Perfect Match (Service + City)
+                    return 1; // Service only match
+                };
+
+                const filteredLocal = localApproved
+                    .map(w => ({ ...w, score: getMatchScore(w) }))
+                    .filter(w => w.score > 0)
+                    .sort((a, b) => b.score - a.score) // Show city hits first
+                    .map(w => ({
+                        _id: w.id,
+                        full_name: w.name,
+                        profile_picture_path: w.photo || 'https://via.placeholder.com/150',
+                        rating: '5.0',
+                        experience: w.exp || 'Expert',
+                        city: w.city,
+                        is_nearby: w.score === 1
+                    }));
 
                 allWorkers = [...allWorkers, ...filteredLocal];
 
@@ -1262,10 +1289,11 @@
 
             if (workers.length === 0) {
                 container.innerHTML = `
-                    <div style="text-align: center; padding: 40px; border: 1px dashed var(--border); border-radius: 15px;">
-                        <i class="fas fa-search-minus" style="font-size: 2rem; color: var(--text-light); margin-bottom: 10px;"></i>
-                        <p>No professionals found in your city for this service.</p>
-                        <p style="font-size: 0.8rem; color: var(--text-light);">Try changing your search criteria or city.</p>
+                    <div style="text-align: center; padding: 40px; border: 1px dashed var(--border); border-radius: 15px; width: 100%;">
+                        <i class="fas fa-user-slash" style="font-size: 2.5rem; color: #ddd; margin-bottom: 15px; display: block;"></i>
+                        <h4 style="color: var(--primary-dark); margin-bottom: 8px;">No Professionals Found</h4>
+                        <p style="font-size: 0.9rem; color: var(--text-light); line-height: 1.4;">We couldn't find any approved workers for <strong>${service}</strong> at the moment.<br>
+                        Please ensure you have <strong>approved</strong> a worker with this skill in the admin panel.</p>
                     </div>
                 `;
                 return;
@@ -1277,10 +1305,16 @@
                 card.innerHTML = `
                     <img src="${w.profile_picture_path || `https://ui-avatars.com/api/?name=${encodeURIComponent(w.full_name)}&background=606c38&color=fff`}" class="worker-img">
                     <div class="worker-info">
-                        <div class="worker-name">${w.full_name}</div>
+                        <div class="worker-name">
+                            ${w.full_name}
+                            ${w.is_nearby ? '<span style="font-size: 0.6rem; background: #e9ecef; color: #666; padding: 2px 6px; border-radius: 10px; margin-left: 5px; vertical-align: middle;">Nearby</span>' : ''}
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 5px;">
+                            <i class="fas fa-map-marker-alt"></i> ${w.city || 'Available'}
+                        </div>
                         <div class="worker-stats">
-                            <span><i class="fas fa-star"></i> ${w.rating || '4.8'}</span>
-                            <span><i class="fas fa-briefcase"></i> ${w.experience || '3'}+ yrs</span>
+                            <span><i class="fas fa-star"></i> ${w.rating || '5.0'}</span>
+                            <span><i class="fas fa-briefcase"></i> ${w.experience || 'Expert'}</span>
                         </div>
                     </div>
                     <div class="select-mark"><i class="fas fa-check"></i></div>

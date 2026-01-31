@@ -525,8 +525,11 @@
                         </div>
                     </td>
                     <td><span class="status-badge" style="background: rgba(96, 108, 56, 0.1); color: var(--primary);">${w.service}</span></td>
-                    <td>${w.rate}</td>
-                    <td><i class="fas fa-map-marker-alt"></i> ${w.city || 'N/A'}</td>
+                    <td>${w.exp || 'N/A'}</td>
+                    <td>
+                        <i class="fas fa-map-marker-alt" style="color:var(--accent)"></i> ${w.city || 'N/A'}<br>
+                        <small style="color: #888;">${w.locality || ''} ${w.pincode ? '(' + w.pincode + ')' : ''}</small>
+                    </td>
                     <td>₹${w.rate}/hr</td>
                     <td><a href="#" onclick="alert('Viewing Secure ID Document...')"><i class="fas fa-file-pdf"></i> View ID</a></td>
                     <td>
