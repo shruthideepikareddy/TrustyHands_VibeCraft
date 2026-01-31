@@ -1,13 +1,6 @@
-﻿# Environment
+node_modules
 .env
-
-# Dependencies
-node_modules/
-
-# Uploads and build artifacts
-uploads/
-
-# OS files
+uploads/*
+!uploads/.gitkeep
+*.log
 .DS_Store
-
-

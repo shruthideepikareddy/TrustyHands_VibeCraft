@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile - TrustyHands</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --dark-moss-green: #606c38;
@@ -25,6 +28,7 @@
             --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
             --transition: all 0.3s ease;
         }
+
         body {
             font-family: 'Roboto', 'Poppins', sans-serif;
             background-color: var(--cornsilk);
@@ -33,10 +37,12 @@
             font-size: 14px;
             padding: 20px;
         }
+
         .container {
             max-width: 900px;
             margin: 0 auto;
         }
+
         .header-bar {
             display: flex;
             justify-content: space-between;
@@ -45,6 +51,7 @@
             padding-bottom: 15px;
             border-bottom: 2px solid rgba(96, 108, 56, 0.2);
         }
+
         .back-btn {
             display: inline-flex;
             align-items: center;
@@ -57,8 +64,18 @@
             font-weight: 500;
             transition: var(--transition);
         }
-        .back-btn:hover { background: var(--tigers-eye); transform: translateY(-2px); }
-        .page-title { color: var(--primary); font-size: 1.8rem; font-weight: 600; }
+
+        .back-btn:hover {
+            background: var(--tigers-eye);
+            transform: translateY(-2px);
+        }
+
+        .page-title {
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
         .profile-card {
             background: var(--white);
             border-radius: 14px;
@@ -66,6 +83,7 @@
             padding: 32px 36px 30px 36px;
             margin-top: 20px;
         }
+
         .profile-header {
             display: flex;
             align-items: center;
@@ -74,6 +92,7 @@
             border-bottom: 1.2px solid #ededed;
             margin-bottom: 32px;
         }
+
         .profile-img-container {
             width: 90px;
             height: 90px;
@@ -89,6 +108,7 @@
             overflow: visible;
             flex-shrink: 0;
         }
+
         .profile-img-container #profileInitials {
             display: flex;
             align-items: center;
@@ -100,6 +120,7 @@
             left: 0;
             z-index: 2;
         }
+
         .profile-img-container img {
             width: 100%;
             height: 100%;
@@ -112,6 +133,7 @@
             left: 0;
             z-index: 1;
         }
+
         .profile-img-upload {
             position: absolute;
             bottom: -12px;
@@ -133,19 +155,23 @@
             opacity: 1;
             transform: none;
         }
+
         .profile-img-upload:hover {
             background: var(--accent);
         }
+
         .profile-info h3 {
             margin: 0;
             color: var(--primary);
             font-size: 1.3rem;
         }
+
         .profile-info p {
             margin: 5px 0 6px 0;
             color: var(--text-light);
             font-size: 1.05rem;
         }
+
         .profile-info .role-badge {
             background: var(--primary);
             color: #fff;
@@ -155,6 +181,7 @@
             font-weight: 500;
             display: inline-block;
         }
+
         .section-title {
             color: var(--primary);
             font-size: 1.22rem;
@@ -164,30 +191,36 @@
             margin-top: 17px;
             margin-bottom: 18px;
         }
+
         .details-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 18px;
             margin-bottom: 10px;
         }
+
         .detail-item {
             background: var(--light-gray);
             padding: 16px 15px 14px 15px;
             border-radius: 9px;
             border: 1px solid #e0e0e0;
         }
+
         .detail-item strong {
             font-size: 13px;
             color: var(--text-light);
             display: block;
             margin-bottom: 6px;
         }
+
         .detail-item span {
             font-size: 1.07rem;
             color: var(--text);
             font-weight: 500;
         }
-        .btn-edit, .btn-logout {
+
+        .btn-edit,
+        .btn-logout {
             margin-top: 38px;
             background: var(--primary);
             color: var(--white);
@@ -203,17 +236,26 @@
             font-weight: 500;
             margin-right: 10px;
         }
-        .btn-edit:hover { background: var(--accent); }
+
+        .btn-edit:hover {
+            background: var(--accent);
+        }
+
         .btn-logout {
             background: var(--tigers-eye);
         }
-        .btn-logout:hover { background: var(--primary); }
+
+        .btn-logout:hover {
+            background: var(--primary);
+        }
+
         .loading {
             text-align: center;
             padding: 55px 0;
             font-size: 1.08rem;
             color: #888;
         }
+
         /* Modal Styles */
         .modal {
             display: none;
@@ -226,6 +268,7 @@
             overflow: auto;
             background-color: rgba(0, 0, 0, 0.5);
         }
+
         .modal-content {
             background-color: var(--white);
             margin: 5% auto;
@@ -234,6 +277,7 @@
             max-width: 500px;
             box-shadow: var(--shadow);
         }
+
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -242,11 +286,13 @@
             padding-bottom: 15px;
             border-bottom: 2px solid rgba(96, 108, 56, 0.2);
         }
+
         .modal-header h2 {
             color: var(--primary);
             margin: 0;
             font-size: 1.5rem;
         }
+
         .close {
             color: #aaa;
             font-size: 28px;
@@ -254,10 +300,15 @@
             cursor: pointer;
             transition: var(--transition);
         }
-        .close:hover { color: var(--accent); }
+
+        .close:hover {
+            color: var(--accent);
+        }
+
         .form-group {
             margin-bottom: 20px;
         }
+
         .form-label {
             display: block;
             margin-bottom: 8px;
@@ -265,6 +316,7 @@
             color: var(--primary);
             font-size: 0.95rem;
         }
+
         .form-input {
             width: 100%;
             padding: 12px;
@@ -275,14 +327,17 @@
             transition: var(--transition);
             box-sizing: border-box;
         }
+
         .form-input:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(96, 108, 56, 0.2);
         }
+
         .form-file-input {
             display: none;
         }
+
         .file-input-label {
             display: inline-block;
             padding: 10px 20px;
@@ -295,10 +350,12 @@
             width: 100%;
             box-sizing: border-box;
         }
+
         .file-input-label:hover {
             background: rgba(96, 108, 56, 0.05);
             border-color: var(--primary);
         }
+
         .preview-image {
             margin-top: 10px;
             max-width: 150px;
@@ -306,6 +363,7 @@
             border-radius: 50%;
             object-fit: cover;
         }
+
         .btn-submit {
             background: var(--primary);
             color: var(--white);
@@ -319,24 +377,38 @@
             width: 100%;
             margin-top: 10px;
         }
-        .btn-submit:hover { background: var(--accent); }
+
+        .btn-submit:hover {
+            background: var(--accent);
+        }
+
         .alert {
             padding: 12px 15px;
             border-radius: 8px;
             margin-bottom: 20px;
             display: none;
         }
+
         .alert-success {
             background: #d4edda;
             color: #155724;
         }
+
         .alert-error {
             background: #f8d7da;
             color: #721c24;
         }
     </style>
 </head>
+
 <body>
+    <script>
+        window.onerror = function (msg, url, line) {
+            alert('JS Error: ' + msg + '\nLine: ' + line + '\nURL: ' + url);
+            return false;
+        };
+        console.log('Global error handler installed');
+    </script>
     <div class="container">
         <div class="header-bar">
             <a href="home.html" class="back-btn">
@@ -352,7 +424,8 @@
                 <div class="profile-img-container" id="profileImgContainer">
                     <span id="profileInitials">U</span>
                     <img id="profileImage" style="display: none;" alt="Profile">
-                    <div class="profile-img-upload" onclick="document.getElementById('imageInput').click()" title="Change Profile Picture">
+                    <div class="profile-img-upload" onclick="document.getElementById('imageInput').click()"
+                        title="Change Profile Picture">
                         <i class="fas fa-camera"></i>
                     </div>
                 </div>
@@ -362,7 +435,7 @@
                     <span class="role-badge" id="profileRoleBadge">User</span>
                 </div>
             </div>
-            
+
             <!-- Quick Edit (Inline) -->
             <div class="section-title">Update Your Details</div>
             <form id="inlineProfileForm">
@@ -386,8 +459,10 @@
                     <div class="detail-item" style="grid-column: span 2;">
                         <strong>Full Address</strong>
                         <div style="display:flex; gap:8px; align-items:center;">
-                            <input type="text" id="inlineAddress" class="form-input" placeholder="Street, area, landmark, etc." style="flex:1;">
-                            <button type="button" id="btnGeoInline" class="btn-submit" style="width:auto; padding:10px 14px;">
+                            <input type="text" id="inlineAddress" class="form-input"
+                                placeholder="Street, area, landmark, etc." style="flex:1;">
+                            <button type="button" id="btnGeoInline" class="btn-submit"
+                                style="width:auto; padding:10px 14px;">
                                 <i class="fas fa-location-arrow"></i>
                             </button>
                         </div>
@@ -449,7 +524,8 @@
             <form id="editProfileForm" enctype="multipart/form-data">
                 <div class="form-group">
                     <label class="form-label">Profile Picture</label>
-                    <input type="file" id="imageInput" name="profileImage" accept="image/jpeg,image/jpg,image/png" class="form-file-input" onchange="previewImage(this)">
+                    <input type="file" id="imageInput" name="profileImage" accept="image/jpeg,image/jpg,image/png"
+                        class="form-file-input" onchange="previewImage(this)">
                     <label for="imageInput" class="file-input-label">
                         <i class="fas fa-upload"></i> Choose Image (JPG, PNG - Max 1MB)
                     </label>
@@ -465,7 +541,8 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Phone Number</label>
-                    <input type="tel" id="editPhone" name="phoneNumber" class="form-input" placeholder="e.g., +91 98765 43210">
+                    <input type="tel" id="editPhone" name="phoneNumber" class="form-input"
+                        placeholder="e.g., +91 98765 43210">
                 </div>
                 <div class="form-group">
                     <label class="form-label">City</label>
@@ -474,7 +551,8 @@
                 <div class="form-group">
                     <label class="form-label">Full Address</label>
                     <div style="display:flex; gap:8px; align-items:center;">
-                        <input type="text" id="editAddress" name="address" class="form-input" placeholder="Street, area, landmark, etc." style="flex:1;">
+                        <input type="text" id="editAddress" name="address" class="form-input"
+                            placeholder="Street, area, landmark, etc." style="flex:1;">
                         <button type="button" id="btnGeo" class="btn-submit" style="width:auto; padding:10px 14px;">
                             <i class="fas fa-location-arrow"></i>
                         </button>
@@ -495,22 +573,26 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const user = await checkAuth(true);
             if (!user) return;
+
             try {
                 const response = await fetch('/api/auth/profile');
                 const data = await response.json();
+
                 if (data.success) {
                     currentUserData = data;
                     renderProfile(data);
                 } else {
-                    alert('Failed to load profile details: ' + (data.error || 'Unknown error'));
+                    document.getElementById('mainContainer').innerHTML = `<div class="loading" style="color:red;">Failed: ${data.error}</div>`;
                 }
             } catch (error) {
-                document.getElementById('mainContainer').innerHTML = '<div class="loading">Error loading profile. Please try again.</div>';
+                console.error('Profile load error:', error);
+                document.getElementById('mainContainer').innerHTML = `<div class="loading" style="color:red;">Error loading profile: ${error.message}</div>`;
             }
         });
 
+
         // Inline geolocation button (same as modal)
-        document.addEventListener('click', async function(e){
+        document.addEventListener('click', async function (e) {
             if (e.target && (e.target.id === 'btnGeoInline' || e.target.closest('#btnGeoInline'))) {
                 const btn = document.getElementById('btnGeoInline');
                 if (!navigator.geolocation) {
@@ -544,7 +626,7 @@
         });
 
         // Inline form submission
-        document.addEventListener('submit', async function(e){
+        document.addEventListener('submit', async function (e) {
             if (e.target && e.target.id === 'inlineProfileForm') {
                 e.preventDefault();
                 const alertDiv = document.getElementById('inlineAlert');
@@ -587,7 +669,7 @@
         });
 
         // Geolocation: fill address and city using browser location (Nominatim reverse geocoding)
-        document.addEventListener('click', async function(e){
+        document.addEventListener('click', async function (e) {
             if (e.target && (e.target.id === 'btnGeo' || e.target.closest('#btnGeo'))) {
                 const btn = document.getElementById('btnGeo');
                 if (!navigator.geolocation) {
@@ -620,66 +702,96 @@
             }
         });
 
+        // Safe DOM helpers
+        function safeSetText(root, selector, text) {
+            const el = root.querySelector(selector);
+            if (el) el.textContent = text || '';
+        }
+        function safeSetValue(root, selector, value) {
+            const el = root.querySelector(selector);
+            if (el) el.value = value || '';
+        }
+
         function renderProfile(data) {
-            const container = document.getElementById('mainContainer');
-            const template = document.getElementById('profileTemplate');
-            const content = template.content.cloneNode(true);
-            const user = data.user;
+            try {
+                const container = document.getElementById('mainContainer');
+                if (!container) return;
 
-            // Profile Image
-            const imgContainer = content.getElementById('profileImgContainer');
-            const initials = content.getElementById('profileInitials');
-            const profileImg = content.getElementById('profileImage');
+                const template = document.getElementById('profileTemplate');
+                if (!template) {
+                    container.innerHTML = '<div class="loading" style="color:red;">Error: Profile template missing</div>';
+                    return;
+                }
 
-            if (user.profileImage) {
-                profileImg.src = user.profileImage;
-                profileImg.style.display = 'block';
-                initials.style.display = 'none';
-            } else {
-                initials.textContent = user.firstName.charAt(0).toUpperCase();
-                initials.style.display = 'flex';
-                profileImg.style.display = 'none';
+                const content = template.content.cloneNode(true);
+                const user = data.user;
+                if (!user) throw new Error('User data is missing');
+
+                // Profile Image / Initials
+                const initials = content.querySelector('#profileInitials');
+                const profileImg = content.querySelector('#profileImage');
+
+                if (user.profileImage) {
+                    if (profileImg) {
+                        profileImg.src = user.profileImage;
+                        profileImg.style.display = 'block';
+                    }
+                    if (initials) initials.style.display = 'none';
+                } else {
+                    if (initials) {
+                        initials.textContent = (user.firstName || 'U').charAt(0).toUpperCase();
+                        initials.style.display = 'flex';
+                    }
+                    if (profileImg) profileImg.style.display = 'none';
+                }
+
+                const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+                safeSetText(content, '#profileName', fullName || 'Anonymous');
+                safeSetText(content, '#profileEmail', user.email || 'No email');
+
+                // Prefill form fields safely
+                safeSetValue(content, '#inlineFirstName', user.firstName);
+                safeSetValue(content, '#inlineLastName', user.lastName);
+                safeSetValue(content, '#inlinePhone', user.phoneNumber);
+                safeSetValue(content, '#inlineCity', user.city);
+                safeSetValue(content, '#inlineAddress', user.address);
+
+                // Role badges
+                const roles = [];
+                if (data.is_worker) roles.push('Worker');
+                if (data.is_customer) roles.push('Customer');
+                if (roles.length === 0) roles.push('User');
+                safeSetText(content, '#profileRoleBadge', roles.join(', '));
+
+                // Conditional Sections
+                const workerSection = content.querySelector('#workerSection');
+                if (data.is_worker && data.worker && workerSection) {
+                    workerSection.style.display = 'block';
+                    const w = data.worker;
+                    safeSetText(workerSection, '#workerService', w.service_type);
+                    safeSetText(workerSection, '#workerPhone', w.phone_number);
+                    safeSetText(workerSection, '#workerLocation', w.location);
+                    safeSetText(workerSection, '#workerPayment', w.payment_mode);
+                    safeSetText(workerSection, '#workerExperience', w.experience || 'No description');
+                }
+
+                const customerSection = content.querySelector('#customerSection');
+                if (data.is_customer && data.customer && customerSection) {
+                    customerSection.style.display = 'block';
+                    const c = data.customer;
+                    safeSetText(customerSection, '#customerPhone', c.phone_number);
+                    safeSetText(customerSection, '#customerAddress', c.address);
+                }
+
+                container.innerHTML = '';
+                container.appendChild(content);
+            } catch (err) {
+                console.error('Render error:', err);
+                const container = document.getElementById('mainContainer');
+                if (container) {
+                    container.innerHTML = `<div class="loading" style="color:red;">Error displaying profile: ${err.message}</div>`;
+                }
             }
-
-            const fullName = `${user.firstName} ${user.lastName || ''}`.trim();
-            content.getElementById('profileName').textContent = fullName;
-            content.getElementById('profileEmail').textContent = user.email;
-
-            // Prefill inline form
-            content.getElementById('inlineFirstName').value = user.firstName || '';
-            content.getElementById('inlineLastName').value = user.lastName || '';
-            content.getElementById('inlinePhone').value = user.phoneNumber || '';
-            content.getElementById('inlineCity').value = user.city || '';
-            content.getElementById('inlineAddress').value = user.address || '';
-
-            // Roles
-            const roles = [];
-            if (data.is_worker) roles.push('Worker');
-            if (data.is_customer) roles.push('Customer');
-            if (roles.length === 0) roles.push('User');
-            content.getElementById('profileRoleBadge').textContent = roles.join(', ');
-
-            // Worker Section
-            if (data.is_worker && data.worker) {
-                const w = data.worker;
-                content.getElementById('workerSection').style.display = 'block';
-                content.getElementById('workerService').textContent = w.service_type;
-                content.getElementById('workerPhone').textContent = w.phone_number;
-                content.getElementById('workerLocation').textContent = w.location;
-                content.getElementById('workerPayment').textContent = w.payment_mode;
-                content.getElementById('workerExperience').textContent = w.experience || 'No description provided';
-            }
-
-            // Customer Section
-            if (data.is_customer && data.customer) {
-                const c = data.customer;
-                content.getElementById('customerSection').style.display = 'block';
-                content.getElementById('customerPhone').textContent = c.phone_number;
-                content.getElementById('customerAddress').textContent = c.address;
-            }
-
-            container.innerHTML = '';
-            container.appendChild(content);
         }
 
         function openEditModal() {
@@ -703,7 +815,7 @@
         function previewImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     const preview = document.getElementById('imagePreview');
                     preview.src = e.target.result;
                     preview.style.display = 'block';
@@ -713,7 +825,7 @@
         }
 
         // Handle image upload on profile page
-        document.addEventListener('change', function(e) {
+        document.addEventListener('change', function (e) {
             if (e.target && e.target.id === 'imageInput') {
                 const file = e.target.files[0];
                 if (file) {
@@ -750,7 +862,7 @@
         }
 
         // Handle edit form submission
-        document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
+        document.getElementById('editProfileForm').addEventListener('submit', async function (e) {
             e.preventDefault();
             const alertDiv = document.getElementById('alertMessage');
             alertDiv.innerHTML = '';
@@ -806,7 +918,7 @@
         });
 
         // Close modal when clicking outside
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             const modal = document.getElementById('editModal');
             if (event.target === modal) {
                 closeEditModal();
@@ -814,4 +926,5 @@
         }
     </script>
 </body>
+
 </html>

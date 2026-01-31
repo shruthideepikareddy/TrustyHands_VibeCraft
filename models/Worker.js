@@ -84,14 +84,6 @@ const workerSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    avg_rating: {
-        type: Number,
-        default: 4.5
-    },
-    total_reviews: {
-        type: Number,
-        default: 0
-    },
     created_at: {
         type: Date,
         default: Date.now
