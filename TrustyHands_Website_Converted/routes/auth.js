@@ -208,6 +208,9 @@ router.put('/profile', uploadProfilePicture.single('profileImage'), async (req, 
         // Update text fields if provided
         if (req.body.firstName) updateData.firstName = req.body.firstName.trim();
         if (req.body.lastName) updateData.lastName = req.body.lastName.trim();
+        if (req.body.phoneNumber) updateData.phoneNumber = req.body.phoneNumber.trim();
+        if (req.body.city) updateData.city = req.body.city.trim();
+        if (req.body.address) updateData.address = req.body.address.trim();
 
         // Handle profile image upload
         if (req.file) {
@@ -238,6 +241,9 @@ router.put('/profile', uploadProfilePicture.single('profileImage'), async (req, 
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
+                phoneNumber: user.phoneNumber,
+                city: user.city,
+                address: user.address,
                 profileImage: user.profileImage
             }
         });

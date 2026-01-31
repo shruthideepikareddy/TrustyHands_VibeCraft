@@ -362,17 +362,42 @@
                     <span class="role-badge" id="profileRoleBadge">User</span>
                 </div>
             </div>
-            <div class="section-title">Personal Information</div>
-            <div class="details-grid">
-                <div class="detail-item">
-                    <strong>Full Name</strong>
-                    <span id="detailName">User Name</span>
+            
+            <!-- Quick Edit (Inline) -->
+            <div class="section-title">Update Your Details</div>
+            <form id="inlineProfileForm">
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <strong>First Name</strong>
+                        <input type="text" id="inlineFirstName" class="form-input" placeholder="First name" required>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Last Name</strong>
+                        <input type="text" id="inlineLastName" class="form-input" placeholder="Last name">
+                    </div>
+                    <div class="detail-item">
+                        <strong>Phone Number</strong>
+                        <input type="tel" id="inlinePhone" class="form-input" placeholder="e.g., +91 98765 43210">
+                    </div>
+                    <div class="detail-item">
+                        <strong>City</strong>
+                        <input type="text" id="inlineCity" class="form-input" placeholder="Your city">
+                    </div>
+                    <div class="detail-item" style="grid-column: span 2;">
+                        <strong>Full Address</strong>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <input type="text" id="inlineAddress" class="form-input" placeholder="Street, area, landmark, etc." style="flex:1;">
+                            <button type="button" id="btnGeoInline" class="btn-submit" style="width:auto; padding:10px 14px;">
+                                <i class="fas fa-location-arrow"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="detail-item">
-                    <strong>Email Address</strong>
-                    <span id="detailEmail">email@example.com</span>
-                </div>
-            </div>
+                <button type="submit" class="btn-submit" style="max-width: 240px;">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+                <div id="inlineAlert" style="margin-top:10px;"></div>
+            </form>
             <!-- Worker Section -->
             <div id="workerSection" style="display: none;">
                 <div class="section-title">Worker Profile</div>
@@ -438,6 +463,23 @@
                     <label class="form-label">Last Name</label>
                     <input type="text" id="editLastName" name="lastName" class="form-input" required>
                 </div>
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" id="editPhone" name="phoneNumber" class="form-input" placeholder="e.g., +91 98765 43210">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">City</label>
+                    <input type="text" id="editCity" name="city" class="form-input" placeholder="Your city">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Full Address</label>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <input type="text" id="editAddress" name="address" class="form-input" placeholder="Street, area, landmark, etc." style="flex:1;">
+                        <button type="button" id="btnGeo" class="btn-submit" style="width:auto; padding:10px 14px;">
+                            <i class="fas fa-location-arrow"></i>
+                        </button>
+                    </div>
+                </div>
                 <button type="submit" class="btn-submit">
                     <i class="fas fa-save"></i> Save Changes
                 </button>
@@ -467,6 +509,117 @@
             }
         });
 
+        // Inline geolocation button (same as modal)
+        document.addEventListener('click', async function(e){
+            if (e.target && (e.target.id === 'btnGeoInline' || e.target.closest('#btnGeoInline'))) {
+                const btn = document.getElementById('btnGeoInline');
+                if (!navigator.geolocation) {
+                    alert('Geolocation is not supported by your browser');
+                    return;
+                }
+                const original = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                btn.disabled = true;
+                try {
+                    const pos = await new Promise((resolve, reject) => {
+                        navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 10000 });
+                    });
+                    const { latitude, longitude } = pos.coords;
+                    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`;
+                    const resp = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                    const geo = await resp.json();
+                    const display = geo.display_name || '';
+                    const city = (geo.address && (geo.address.city || geo.address.town || geo.address.village || geo.address.county)) || '';
+                    const addressInput = document.getElementById('inlineAddress');
+                    const cityInput = document.getElementById('inlineCity');
+                    if (addressInput) addressInput.value = display;
+                    if (cityInput) cityInput.value = city;
+                } catch (err) {
+                    alert('Unable to fetch your location');
+                } finally {
+                    btn.innerHTML = original;
+                    btn.disabled = false;
+                }
+            }
+        });
+
+        // Inline form submission
+        document.addEventListener('submit', async function(e){
+            if (e.target && e.target.id === 'inlineProfileForm') {
+                e.preventDefault();
+                const alertDiv = document.getElementById('inlineAlert');
+                alertDiv.innerHTML = '';
+                alertDiv.style.display = 'none';
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                submitBtn.disabled = true;
+                try {
+                    const formData = new FormData();
+                    formData.append('firstName', document.getElementById('inlineFirstName').value.trim());
+                    formData.append('lastName', document.getElementById('inlineLastName').value.trim());
+                    formData.append('phoneNumber', document.getElementById('inlinePhone').value.trim());
+                    formData.append('city', document.getElementById('inlineCity').value.trim());
+                    formData.append('address', document.getElementById('inlineAddress').value.trim());
+
+                    const response = await fetch('/api/auth/profile', {
+                        method: 'PUT',
+                        credentials: 'include',
+                        body: formData
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        alertDiv.innerHTML = '<div class="alert alert-success">Profile updated successfully!</div>';
+                        alertDiv.style.display = 'block';
+                        setTimeout(() => { location.reload(); }, 800);
+                    } else {
+                        alertDiv.innerHTML = `<div class="alert alert-error">${data.error || 'Failed to update profile'}</div>`;
+                        alertDiv.style.display = 'block';
+                    }
+                } catch (err) {
+                    alertDiv.innerHTML = '<div class="alert alert-error">Error updating profile. Please try again.</div>';
+                    alertDiv.style.display = 'block';
+                } finally {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            }
+        });
+
+        // Geolocation: fill address and city using browser location (Nominatim reverse geocoding)
+        document.addEventListener('click', async function(e){
+            if (e.target && (e.target.id === 'btnGeo' || e.target.closest('#btnGeo'))) {
+                const btn = document.getElementById('btnGeo');
+                if (!navigator.geolocation) {
+                    alert('Geolocation is not supported by your browser');
+                    return;
+                }
+                const original = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                btn.disabled = true;
+                try {
+                    const pos = await new Promise((resolve, reject) => {
+                        navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 10000 });
+                    });
+                    const { latitude, longitude } = pos.coords;
+                    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`;
+                    const resp = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                    const geo = await resp.json();
+                    const display = geo.display_name || '';
+                    const city = (geo.address && (geo.address.city || geo.address.town || geo.address.village || geo.address.county)) || '';
+                    const addressInput = document.getElementById('editAddress');
+                    const cityInput = document.getElementById('editCity');
+                    if (addressInput) addressInput.value = display;
+                    if (cityInput) cityInput.value = city;
+                } catch (err) {
+                    alert('Unable to fetch your location');
+                } finally {
+                    btn.innerHTML = original;
+                    btn.disabled = false;
+                }
+            }
+        });
+
         function renderProfile(data) {
             const container = document.getElementById('mainContainer');
             const template = document.getElementById('profileTemplate');
@@ -491,8 +644,13 @@
             const fullName = `${user.firstName} ${user.lastName || ''}`.trim();
             content.getElementById('profileName').textContent = fullName;
             content.getElementById('profileEmail').textContent = user.email;
-            content.getElementById('detailName').textContent = fullName;
-            content.getElementById('detailEmail').textContent = user.email;
+
+            // Prefill inline form
+            content.getElementById('inlineFirstName').value = user.firstName || '';
+            content.getElementById('inlineLastName').value = user.lastName || '';
+            content.getElementById('inlinePhone').value = user.phoneNumber || '';
+            content.getElementById('inlineCity').value = user.city || '';
+            content.getElementById('inlineAddress').value = user.address || '';
 
             // Roles
             const roles = [];
@@ -529,6 +687,9 @@
             const user = currentUserData.user;
             document.getElementById('editFirstName').value = user.firstName;
             document.getElementById('editLastName').value = user.lastName || '';
+            document.getElementById('editPhone').value = user.phoneNumber || '';
+            document.getElementById('editCity').value = user.city || '';
+            document.getElementById('editAddress').value = user.address || '';
             document.getElementById('imagePreview').style.display = 'none';
             document.getElementById('imageInput').value = '';
             document.getElementById('editModal').style.display = 'block';
@@ -598,6 +759,9 @@
             const formData = new FormData();
             formData.append('firstName', document.getElementById('editFirstName').value.trim());
             formData.append('lastName', document.getElementById('editLastName').value.trim());
+            formData.append('phoneNumber', document.getElementById('editPhone').value.trim());
+            formData.append('city', document.getElementById('editCity').value.trim());
+            formData.append('address', document.getElementById('editAddress').value.trim());
 
             const imageFile = document.getElementById('imageInput').files[0];
             if (imageFile) {

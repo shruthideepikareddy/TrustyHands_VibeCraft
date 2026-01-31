@@ -29,6 +29,23 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 8
     },
+    phoneNumber: {
+        type: String,
+        default: null,
+        trim: true
+    },
+    city: {
+        type: String,
+        default: null,
+        trim: true,
+        maxlength: 100
+    },
+    address: {
+        type: String,
+        default: null,
+        trim: true,
+        maxlength: 500
+    },
     profileImage: {
         type: String,
         default: null
