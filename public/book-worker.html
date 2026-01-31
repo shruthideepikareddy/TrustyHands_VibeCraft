@@ -1203,27 +1203,50 @@
             nextBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Finding workers...';
 
             try {
-                // 1. Create Initial Booking
-                const response = await fetch('/api/bookings', {
-                    method: 'POST',
-                    body: formData,
-                    credentials: 'include'
-                });
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.message || 'Saving failed');
-
-                bookingId = data.booking_id;
+                // 1. (Optional) Create Initial Booking in Backend if possible
+                try {
+                    const response = await fetch('/api/bookings', {
+                        method: 'POST',
+                        body: formData,
+                        credentials: 'include'
+                    });
+                    const data = await response.json();
+                    if (response.ok) bookingId = data.booking_id;
+                } catch (e) {
+                    console.log("Backend offline, continuing with local search only.");
+                }
 
                 // 2. Search for workers
                 const service = formData.get('service');
                 const city = formData.get('city');
 
-                const wResp = await fetch(`/api/workers/search?service=${encodeURIComponent(service)}&location=${encodeURIComponent(city)}`, {
-                    credentials: 'include'
-                });
-                const wData = await wResp.json();
+                let allWorkers = [];
 
-                renderWorkers(wData.workers || []);
+                // A. Try API search
+                try {
+                    const wResp = await fetch(`/api/workers/search?service=${encodeURIComponent(service)}&location=${encodeURIComponent(city)}`, {
+                        credentials: 'include'
+                    });
+                    const wData = await wResp.json();
+                    if (wData.workers) allWorkers = [...wData.workers];
+                } catch (e) { console.warn("API Worker search failed"); }
+
+                // B. Add LocalStorage Approved Workers (Filter by service and city)
+                const localApproved = JSON.parse(localStorage.getItem('approvedWorkers') || '[]');
+                const filteredLocal = localApproved.filter(w =>
+                    w.service.toLowerCase() === service.toLowerCase() &&
+                    w.city.toLowerCase() === city.toLowerCase()
+                ).map(w => ({
+                    _id: w.id,
+                    full_name: w.name,
+                    profile_picture_path: w.photo || 'https://via.placeholder.com/150',
+                    rating: '5.0',
+                    experience: 'Expert'
+                }));
+
+                allWorkers = [...allWorkers, ...filteredLocal];
+
+                renderWorkers(allWorkers);
                 goToStep(4);
             } catch (err) {
                 alert('Error: ' + err.message);
