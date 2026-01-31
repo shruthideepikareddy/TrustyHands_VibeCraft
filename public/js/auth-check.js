@@ -43,31 +43,13 @@ function updateUserDisplay(user) {
         userNameElement.textContent = user.firstName;
     }
 
-    // Also try to reflect avatar image in any header avatar elements if present
+    // Also try to reflect avatar image and initials in any header avatar elements if present
     (async () => {
         try {
             const resp = await fetch('/api/auth/profile', { credentials: 'include' });
             const profile = await resp.json();
-            if (profile && profile.success && profile.user && profile.user.profileImage) {
-                const avatarUrl = profile.user.profileImage;
-                const profileCircle = document.getElementById('profileToggle');
-                const userInitials = document.getElementById('userInitials');
-                const dropdownInitials = document.getElementById('dropdownInitials');
-
-                if (profileCircle) {
-                    profileCircle.style.backgroundImage = `url('${avatarUrl}')`;
-                    profileCircle.style.backgroundSize = 'cover';
-                    profileCircle.style.backgroundPosition = 'center';
-                }
-                if (userInitials) {
-                    userInitials.textContent = '';
-                }
-                if (dropdownInitials) {
-                    dropdownInitials.style.backgroundImage = `url('${avatarUrl}')`;
-                    dropdownInitials.style.backgroundSize = 'cover';
-                    dropdownInitials.style.backgroundPosition = 'center';
-                    dropdownInitials.textContent = '';
-                }
+            if (profile && profile.success && profile.user) {
+                applyHeaderAvatar(profile.user.profileImage, profile.user.firstName);
             }
         } catch (e) {
             // ignore avatar update failures on pages without header
@@ -76,24 +58,40 @@ function updateUserDisplay(user) {
 }
 
 // Helper: apply avatar image to header elements if they exist
-function applyHeaderAvatar(avatarUrl) {
+function applyHeaderAvatar(avatarUrl, firstName = '') {
     const profileCircle = document.getElementById('profileToggle');
     const userInitials = document.getElementById('userInitials');
     const dropdownInitials = document.getElementById('dropdownInitials');
+    const initials = (firstName ? firstName.charAt(0) : 'U').toUpperCase();
 
     if (profileCircle) {
-        profileCircle.style.backgroundImage = `url('${avatarUrl}')`;
-        profileCircle.style.backgroundSize = 'cover';
-        profileCircle.style.backgroundPosition = 'center';
+        if (avatarUrl) {
+            profileCircle.style.backgroundImage = `url('${avatarUrl}')`;
+            profileCircle.style.backgroundSize = 'cover';
+            profileCircle.style.backgroundPosition = 'center';
+        } else {
+            profileCircle.style.backgroundImage = 'none';
+        }
     }
+
     if (userInitials) {
-        userInitials.textContent = '';
+        if (avatarUrl) {
+            userInitials.textContent = '';
+        } else {
+            userInitials.textContent = initials;
+        }
     }
+
     if (dropdownInitials) {
-        dropdownInitials.style.backgroundImage = `url('${avatarUrl}')`;
-        dropdownInitials.style.backgroundSize = 'cover';
-        dropdownInitials.style.backgroundPosition = 'center';
-        dropdownInitials.textContent = '';
+        if (avatarUrl) {
+            dropdownInitials.style.backgroundImage = `url('${avatarUrl}')`;
+            dropdownInitials.style.backgroundSize = 'cover';
+            dropdownInitials.style.backgroundPosition = 'center';
+            dropdownInitials.textContent = '';
+        } else {
+            dropdownInitials.style.backgroundImage = 'none';
+            dropdownInitials.textContent = initials;
+        }
     }
 }
 
@@ -104,25 +102,27 @@ function applyHeaderAvatar(avatarUrl) {
             // 1) Apply cached avatar immediately to avoid flicker/shift
             const cached = localStorage.getItem('th_avatar_url');
             if (cached) {
-                // temporarily disable transition to avoid slide
-                const el = document.getElementById('profileToggle');
-                const prev = el ? el.style.transition : null;
-                if (el) el.style.transition = 'none';
                 applyHeaderAvatar(cached);
-                // re-enable after a tick
-                if (el) setTimeout(() => { el.style.transition = prev || ''; }, 50);
             }
 
             // 2) Fetch latest profile and update avatar/cache
             const resp = await fetch('/api/auth/profile', { credentials: 'include' });
             const profile = await resp.json();
-            if (profile && profile.success && profile.user && profile.user.profileImage) {
+
+            if (profile && profile.success && profile.user) {
                 const url = profile.user.profileImage;
-                localStorage.setItem('th_avatar_url', url);
-                applyHeaderAvatar(url);
+                const firstName = profile.user.firstName;
+
+                if (url) {
+                    localStorage.setItem('th_avatar_url', url);
+                    applyHeaderAvatar(url, firstName);
+                } else {
+                    localStorage.removeItem('th_avatar_url');
+                    applyHeaderAvatar(null, firstName);
+                }
             }
         } catch (e) {
-            // ignore if not logged in or endpoint unavailable on this page
+            // ignore if not logged in
         }
     }
 

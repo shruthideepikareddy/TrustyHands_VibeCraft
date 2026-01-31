@@ -897,7 +897,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--dark-moss-green), var(--pakistan-green));
+            background: linear-gradient(135deg, var(--earth-yellow), var(--tigers-eye));
             color: white;
             display: flex;
             align-items: center;
@@ -1739,7 +1739,7 @@
                 if (authLinks) authLinks.style.display = 'none';
 
                 // Set user initials and name
-                const initials = (user.firstName.charAt(0) + (user.lastName ? user.lastName.charAt(0) : '')).toUpperCase() || 'U';
+                const initials = (user.firstName ? user.firstName.charAt(0) : 'U').toUpperCase();
 
                 const userInitialsEl = document.getElementById('userInitials');
                 const dropdownInitialsEl = document.getElementById('dropdownInitials');

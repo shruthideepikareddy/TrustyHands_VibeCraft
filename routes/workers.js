@@ -89,18 +89,18 @@ router.post('/register', uploadWorkerFiles, async (req, res) => {
 // @access  Public
 router.get('/search', async (req, res) => {
     try {
-        const { service, location } = req.query;
+        const { service, city } = req.query;
 
-        if (!service || !location) {
+        if (!service || !city) {
             return res.status(400).json({
                 success: false,
-                error: 'Service type and location are required'
+                error: 'Service type and city are required'
             });
         }
 
         const workers = await Worker.find({
             service_type: service,
-            location: new RegExp(location, 'i') // Case-insensitive search
+            location: new RegExp(city, 'i') // Case-insensitive search
         });
 
         res.json({

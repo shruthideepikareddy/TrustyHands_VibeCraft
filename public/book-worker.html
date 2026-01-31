@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Professional | Trustyhands</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #606c38;
+            --primary-dark: #283618;
+            --secondary: #dda15e;
+            --accent: #bc6c25;
+            --background: #fdfae0;
+            --white: #ffffff;
+            --text: #2d3436;
+            --text-light: #636e72;
+            --error: #d63031;
+            --success: #00b894;
+            --border: #dfe6e9;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --orange: #bc6c25;
+            --yellow: #dda15e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus+Jakarta+Sans', sans-serif;
+            background-color: #f8f9fa;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: var(--white);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .logo i {
+            color: var(--accent);
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--text);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            border: 1.5px solid var(--border);
+            background: var(--white);
+        }
+
+        .back-link:hover {
+            border-color: var(--orange);
+            color: var(--orange);
+            background: rgba(188, 108, 37, 0.05);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(188, 108, 37, 0.1);
+        }
+
+        .back-link i {
+            font-size: 0.8rem;
+        }
+
+        /* Error Messages */
+        .error-msg {
+            color: var(--error);
+            font-size: 0.75rem;
+            margin-top: 4px;
+            display: none;
+            font-weight: 500;
+            text-align: right;
+        }
+
+        .field-error input,
+        .field-error select,
+        .field-error textarea {
+            border-color: var(--error) !important;
+            background-color: rgba(214, 48, 49, 0.02);
+        }
+
+        .field-error .error-msg {
+            display: block;
+        }
+
+        /* Search Box */
+        .search-container {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .search-container input {
+            padding-left: 45px !important;
+            border-radius: 15px !important;
+        }
+
+        /* Stepper */
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px auto;
+            max-width: 800px;
+            position: relative;
+        }
+
+        .stepper::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--border);
+            z-index: 1;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--white);
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: var(--transition);
+            color: var(--text-light);
+        }
+
+        .step-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .step.active .step-icon {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: var(--white);
+            box-shadow: 0 0 0 5px rgba(96, 108, 56, 0.1);
+        }
+
+        .step.active .step-label {
+            color: var(--primary);
+        }
+
+        .step.completed .step-icon {
+            background: var(--success);
+            border-color: var(--success);
+            color: var(--white);
+        }
+
+        /* Layout Grid */
+        .booking-grid {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .booking-main {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            min-height: 500px;
+        }
+
+        .booking-sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .summary-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        /* Step Contents */
+        .step-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2.step-title {
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+        }
+
+        p.step-desc {
+            color: var(--text-light);
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        /* Service Cards */
+        .services-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 15px;
+            max-height: 420px;
+            overflow-y: auto;
+            padding: 5px 10px 10px 5px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
+        }
+
+        .services-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .services-list::-webkit-scrollbar-thumb {
+            background-color: var(--primary);
+            border-radius: 10px;
+        }
+
+        .service-item {
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 100px;
+            /* Fixed height for consistency in grid */
+        }
+
+        .service-item:hover {
+            border-color: var(--primary);
+            background: rgba(96, 108, 56, 0.02);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .service-item.selected {
+            border-color: var(--primary);
+            background: rgba(96, 108, 56, 0.05);
+            box-shadow: 0 8px 20px rgba(96, 108, 56, 0.15);
+        }
+
+        .service-item i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .service-item span {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text);
+            display: block;
+            line-height: 1.2;
+        }
+
+        /* Form Controls */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            background: #fbfbfc;
+            transition: var(--transition);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(96, 108, 56, 0.05);
+        }
+
+        .time-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .time-tab {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+            border-radius: 20px;
+        }
+
+        .time-tab.active {
+            background: rgba(96, 108, 56, 0.1);
+            color: var(--primary);
+        }
+
+        .time-slots-group {
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .time-slots-group.active {
+            display: grid;
+        }
+
+        .time-slot {
+            padding: 12px;
+            text-align: center;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--white);
+        }
+
+        .time-slot:hover {
+            border-color: var(--primary);
+            background: rgba(96, 108, 56, 0.02);
+            transform: translateY(-2px);
+        }
+
+        .time-slot.selected {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(96, 108, 56, 0.2);
+        }
+
+        .custom-time-picker {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 14px;
+            border: 1px dashed var(--border);
+        }
+
+        .custom-time-picker select {
+            width: auto;
+            flex: 1;
+        }
+
+        .urgency-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .urgency-btn {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-align: center;
+            transition: var(--transition);
+            background: var(--white);
+        }
+
+        .urgency-btn.selected {
+            border-color: var(--primary);
+            background: rgba(96, 108, 56, 0.05);
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Buttons */
+        .btn-flex {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-next {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-next:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-prev {
+            background: #f1f3f5;
+            color: var(--text-light);
+        }
+
+        .btn-prev:hover {
+            background: #e9ecef;
+        }
+
+        /* Summary Sidebar */
+        .summary-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+        }
+
+        .summary-label {
+            color: var(--text-light);
+        }
+
+        .summary-value {
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .price-total {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-amount {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Worker Cards */
+        .workers-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .worker-card {
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .worker-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .worker-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #eee;
+        }
+
+        .worker-info {
+            flex: 1;
+        }
+
+        .worker-name {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .worker-stats {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            display: flex;
+            gap: 15px;
+        }
+
+        .worker-stats i {
+            color: var(--secondary);
+            margin-right: 4px;
+        }
+
+        .select-mark {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: transparent;
+            transition: var(--transition);
+        }
+
+        .worker-card.selected {
+            border-color: var(--primary);
+            background: rgba(96, 108, 56, 0.02);
+        }
+
+        .worker-card.selected .select-mark {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--white);
+        }
+
+        .locate-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            transition: var(--transition);
+        }
+
+        .locate-btn:hover {
+            background: rgba(96, 108, 56, 0.05);
+            color: var(--accent);
+        }
+
+        @media (max-width: 900px) {
+            .booking-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-sidebar {
+                position: static;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .stepper {
+                padding: 0 10px;
+            }
+
+            .step-label {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container header-flex">
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <a href="home.html" class="back-link"
+                    style="padding: 8px 15px; font-weight: 700; background: var(--white); border: 2px solid var(--primary); color: var(--primary); border-radius: 30px; text-decoration: none;">
+                    <i class="fas fa-arrow-left"></i> Home
+                </a>
+                <a href="home.html" class="logo">
+                    <i class="fas fa-hands-helping"></i>
+                    <span>Trustyhands</span>
+                </a>
+            </div>
+            <a href="home.html" class="back-link">
+                <i class="fas fa-times"></i> Cancel Booking
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="stepper" id="stepper">
+            <div class="step active" data-step="1">
+                <div class="step-icon">1</div>
+                <div class="step-label">Service</div>
+            </div>
+            <div class="step" data-step="2">
+                <div class="step-icon">2</div>
+                <div class="step-label">Details</div>
+            </div>
+            <div class="step" data-step="3">
+                <div class="step-icon">3</div>
+                <div class="step-label">Info</div>
+            </div>
+            <div class="step" data-step="4">
+                <div class="step-icon">4</div>
+                <div class="step-label">Worker</div>
+            </div>
+        </div>
+
+        <div class="booking-grid">
+            <main class="booking-main">
+                <form id="bookingForm">
+                    <!-- Step 1: Select Service -->
+                    <div class="step-content active" id="step1">
+                        <h2 class="step-title">What do you need help with?</h2>
+                        <p class="step-desc">Pick a service category to get started with your booking.</p>
+
+                        <div class="search-container">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="serviceSearch"
+                                placeholder="Search for a service (e.g. Plumbing, AC, Cleaning)...">
+                        </div>
+
+                        <div class="services-list" id="servicesList">
+                            <div class="service-item" data-value="Plumbing Services">
+                                <i class="fas fa-faucet"></i>
+                                <span>Plumbing</span>
+                            </div>
+                            <div class="service-item" data-value="Electrical Work">
+                                <i class="fas fa-bolt"></i>
+                                <span>Electrical</span>
+                            </div>
+                            <div class="service-item" data-value="Deep Cleaning">
+                                <i class="fas fa-broom"></i>
+                                <span>Cleaning</span>
+                            </div>
+                            <div class="service-item" data-value="Carpentry">
+                                <i class="fas fa-hammer"></i>
+                                <span>Carpentry</span>
+                            </div>
+                            <div class="service-item" data-value="Painting Services">
+                                <i class="fas fa-paint-roller"></i>
+                                <span>Painting</span>
+                            </div>
+                            <div class="service-item" data-value="AC Service">
+                                <i class="fas fa-wind"></i>
+                                <span>AC Services</span>
+                            </div>
+                            <div class="service-item" data-value="Packers & Movers">
+                                <i class="fas fa-boxes"></i>
+                                <span>Moving</span>
+                            </div>
+                            <div class="service-item" data-value="Kitchen Cleaning">
+                                <i class="fas fa-utensils"></i>
+                                <span>Kitchen</span>
+                            </div>
+                            <div class="service-item" data-value="Event Staffing">
+                                <i class="fas fa-glass-cheers"></i>
+                                <span>Events</span>
+                            </div>
+                            <div class="service-item" data-value="Home Sanitization">
+                                <i class="fas fa-hand-sparkles"></i>
+                                <span>Sanitization</span>
+                            </div>
+                            <div class="service-item" data-value="Babysitting">
+                                <i class="fas fa-baby"></i>
+                                <span>Babysitting</span>
+                            </div>
+                            <div class="service-item" data-value="Gardening Services">
+                                <i class="fas fa-leaf"></i>
+                                <span>Gardening</span>
+                            </div>
+                            <div class="service-item" data-value="Bathroom Cleaning">
+                                <i class="fas fa-shower"></i>
+                                <span>Bathroom</span>
+                            </div>
+                            <div class="service-item" data-value="Fridge Repair">
+                                <i class="fas fa-snowflake"></i>
+                                <span>Fridge</span>
+                            </div>
+                            <div class="service-item" data-value="TV Repair">
+                                <i class="fas fa-tv"></i>
+                                <span>TV Repair</span>
+                            </div>
+                            <div class="service-item" data-value="Cook Services">
+                                <i class="fas fa-utensils"></i>
+                                <span>Cooks</span>
+                            </div>
+                            <div class="service-item" data-value="Washing Machine Repair">
+                                <i class="fas fa-soap"></i>
+                                <span>Washing</span>
+                            </div>
+                            <div class="service-item" data-value="Car Detailing">
+                                <i class="fas fa-car"></i>
+                                <span>Car Detailing</span>
+                            </div>
+                        </div>
+                        <input type="hidden" name="service" id="selectedService">
+                        <div class="error-msg" id="serviceError">Please select a service category to continue.</div>
+                    </div>
+
+                    <!-- Step 2: Booking Details -->
+                    <div class="step-content" id="step2">
+                        <h2 class="step-title">When should we come?</h2>
+                        <p class="step-desc">Select your preferred date, time, and service urgency.</p>
+
+                        <div class="form-group" id="dateGroup">
+                            <label>Pick a Date</label>
+                            <input type="date" id="bookingDate" name="date" required>
+                            <div class="error-msg">Please select a preferred date.</div>
+                        </div>
+
+                        <div class="form-group" id="timeGroup">
+                            <label>Select Arrival Time</label>
+                            <div class="time-tabs">
+                                <div class="time-tab active" data-target="morning">Morning</div>
+                                <div class="time-tab" data-target="afternoon">Afternoon</div>
+                                <div class="time-tab" data-target="evening">Evening</div>
+                                <div class="time-tab" data-target="custom">Custom</div>
+                            </div>
+
+                            <div class="time-slots-group active" id="morning">
+                                <div class="time-slot" data-time="08:00 AM">08:00 AM</div>
+                                <div class="time-slot" data-time="09:00 AM">09:00 AM</div>
+                                <div class="time-slot" data-time="10:00 AM">10:00 AM</div>
+                                <div class="time-slot" data-time="11:00 AM">11:00 AM</div>
+                            </div>
+
+                            <div class="time-slots-group" id="afternoon">
+                                <div class="time-slot" data-time="12:00 PM">12:00 PM</div>
+                                <div class="time-slot" data-time="01:00 PM">01:00 PM</div>
+                                <div class="time-slot" data-time="02:00 PM">02:00 PM</div>
+                                <div class="time-slot" data-time="03:00 PM">03:00 PM</div>
+                                <div class="time-slot" data-time="04:00 PM">04:00 PM</div>
+                            </div>
+
+                            <div class="time-slots-group" id="evening">
+                                <div class="time-slot" data-time="05:00 PM">05:00 PM</div>
+                                <div class="time-slot" data-time="06:00 PM">06:00 PM</div>
+                                <div class="time-slot" data-time="07:00 PM">07:00 PM</div>
+                                <div class="time-slot" data-time="08:00 PM">08:00 PM</div>
+                            </div>
+
+                            <div class="time-slots-group" id="custom">
+                                <div class="custom-time-picker">
+                                    <select id="customHour" class="form-control">
+                                        <option value="Select Hour" disabled selected>Hour</option>
+                                        <option value="01">01</option>
+                                        <option value="02">02</option>
+                                        <option value="03">03</option>
+                                        <option value="04">04</option>
+                                        <option value="05">05</option>
+                                        <option value="06">06</option>
+                                        <option value="07">07</option>
+                                        <option value="08">08</option>
+                                        <option value="09">09</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </select>
+                                    <select id="customMinute" class="form-control">
+                                        <option value="Select Min" disabled selected>Min</option>
+                                        <option value="00">00</option>
+                                        <option value="15">15</option>
+                                        <option value="30">30</option>
+                                        <option value="45">45</option>
+                                    </select>
+                                    <select id="customPeriod" class="form-control">
+                                        <option value="AM">AM</option>
+                                        <option value="PM">PM</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="time_slot" id="selectedTimeSlot">
+                            <div class="error-msg">Please select an arrival time.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Service Urgency</label>
+                            <div class="urgency-options">
+                                <div class="urgency-btn" data-value="Emergency">Standard</div>
+                                <div class="urgency-btn selected" data-value="ASAP">ASAP</div>
+                                <div class="urgency-btn" data-value="Scheduled">Flexible</div>
+                            </div>
+                            <input type="hidden" name="urgency" id="selectedUrgency" value="ASAP">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Describe your requirement (Optional)</label>
+                            <textarea name="problem_description" rows="3"
+                                placeholder="I have a leakage in my kitchen tap..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Customer Info -->
+                    <div class="step-content" id="step3">
+                        <h2 class="step-title">Where should we go?</h2>
+                        <p class="step-desc">Confirm your contact information and service address.</p>
+
+                        <div class="form-row">
+                            <div class="form-group" id="nameGroup">
+                                <label>Full Name</label>
+                                <input type="text" name="full_name" id="userName" placeholder="Your name" required>
+                                <div class="error-msg">Full name is required.</div>
+                            </div>
+                            <div class="form-group" id="phoneGroup">
+                                <label>Phone Number</label>
+                                <input type="tel" name="phone" id="userPhone" placeholder="+1..." required>
+                                <div class="error-msg">Valid phone number is required.</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="emailGroup">
+                            <label>Email Address</label>
+                            <input type="email" name="email" id="userEmail" placeholder="your@email.com" required>
+                            <div class="error-msg">Valid email address is required.</div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group" id="cityGroup">
+                                <label>City</label>
+                                <input type="text" name="city" id="userCity" placeholder="City" required>
+                                <div class="error-msg">City is required.</div>
+                            </div>
+                            <div class="form-group">
+                                <label>Landmark (Optional)</label>
+                                <input type="text" name="landmark" placeholder="Near Apollo Mall">
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="addressGroup">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <label style="margin-bottom: 0;">Service Address</label>
+                                <button type="button" id="locateMeBtn" class="locate-btn">
+                                    <i class="fas fa-location-arrow"></i> Use Current Location
+                                </button>
+                            </div>
+                            <textarea name="address" id="userAddress" rows="3" placeholder="Full street address..."
+                                required></textarea>
+                            <div class="error-msg">Service address is required.</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Select Worker -->
+                    <div class="step-content" id="step4">
+                        <h2 class="step-title">Choose your professional</h2>
+                        <p class="step-desc">Select the top-rated worker available for your requirements.</p>
+
+                        <div class="workers-list" id="workersList">
+                            <!-- Populated via JS -->
+                        </div>
+                        <input type="hidden" name="worker_id" id="selectedWorkerId">
+                    </div>
+
+                    <div class="btn-flex">
+                        <button type="button" class="btn btn-prev" id="prevBtn" style="visibility: hidden;">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <button type="button" class="btn btn-next" id="nextBtn">
+                            Continue <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button type="submit" class="btn btn-next" id="submitBtn" style="display: none;">
+                            Confirm Booking <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                </form>
+            </main>
+
+            <aside class="booking-sidebar">
+                <div class="summary-card">
+                    <h3>Booking Summary</h3>
+                    <div id="summaryContent">
+                        <p style="color: var(--text-light); font-size: 0.85rem;">Select a service to see details.</p>
+                    </div>
+
+                    <div class="price-total">
+                        <span class="summary-label">Estimated Total</span>
+                        <span class="total-amount" id="totalAmount">$--</span>
+                    </div>
+
+                    <div style="margin-top: 20px; font-size: 0.75rem; color: var(--text-light);">
+                        <i class="fas fa-info-circle"></i> Actual price might vary slightly based on actual work.
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth-check.js"></script>
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+        let selectedWorker = null;
+        let bookingId = null;
+
+        // Form elements
+        const form = document.getElementById('bookingForm');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Step 1: Service Selection
+        function initServiceSelection() {
+            document.querySelectorAll('.service-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    document.querySelectorAll('.service-item').forEach(i => i.classList.remove('selected'));
+                    item.classList.add('selected');
+                    document.getElementById('selectedService').value = item.dataset.value;
+                    document.getElementById('serviceError').style.display = 'none';
+                    updateSummary();
+                });
+            });
+        }
+        initServiceSelection();
+
+        // Service Search
+        const serviceSearch = document.getElementById('serviceSearch');
+        serviceSearch.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.service-item').forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(term) ? 'flex' : 'none';
+            });
+        });
+
+        // Step 2: Time Slots Redesign
+        const timeTabs = document.querySelectorAll('.time-tab');
+        const timeGroups = document.querySelectorAll('.time-slots-group');
+
+        timeTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                timeTabs.forEach(t => t.classList.remove('active'));
+                timeGroups.forEach(g => g.classList.remove('active'));
+
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.target).classList.add('active');
+            });
+        });
+
+        document.querySelectorAll('.time-slot').forEach(slot => {
+            slot.addEventListener('click', () => {
+                document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                slot.classList.add('selected');
+                document.getElementById('selectedTimeSlot').value = slot.dataset.time;
+                document.getElementById('timeGroup').classList.remove('field-error');
+                updateSummary();
+            });
+        });
+
+        // Custom Time Logic
+        const updateCustomTime = () => {
+            const h = document.getElementById('customHour').value;
+            const m = document.getElementById('customMinute').value;
+            const p = document.getElementById('customPeriod').value;
+
+            if (!h.includes('Select') && !m.includes('Select')) {
+                const formatted = `${h}:${m} ${p}`;
+                document.getElementById('selectedTimeSlot').value = formatted;
+                document.getElementById('timeGroup').classList.remove('field-error');
+                updateSummary();
+            }
+        };
+
+        ['customHour', 'customMinute', 'customPeriod'].forEach(id => {
+            document.getElementById(id).addEventListener('change', updateCustomTime);
+        });
+
+        document.querySelectorAll('.urgency-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.urgency-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                document.getElementById('selectedUrgency').value = btn.dataset.value;
+            });
+        });
+
+        // Stepper Navigation
+        nextBtn.addEventListener('click', async () => {
+            if (!validateStep(currentStep)) return;
+
+            if (currentStep === 3) {
+                // Before moving to step 4, we save the booking and search for workers
+                await saveAndSearch();
+            } else {
+                goToStep(currentStep + 1);
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            goToStep(currentStep - 1);
+        });
+
+        function goToStep(step) {
+            document.querySelectorAll('.step-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+
+            // Update Stepper UI
+            document.querySelectorAll('.step').forEach(s => {
+                const sNum = parseInt(s.dataset.step);
+                s.classList.remove('active', 'completed');
+                if (sNum === step) s.classList.add('active');
+                if (sNum < step) s.classList.add('completed');
+            });
+
+            currentStep = step;
+            updateNavButtons();
+            updateSummary();
+        }
+
+        // Real-time error clearing
+        document.querySelectorAll('input, select, textarea').forEach(input => {
+            input.addEventListener('input', () => {
+                const group = input.closest('.form-group');
+                if (group) group.classList.remove('field-error');
+            });
+            input.addEventListener('change', () => {
+                const group = input.closest('.form-group');
+                if (group) group.classList.remove('field-error');
+            });
+        });
+
+        function updateNavButtons() {
+            prevBtn.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+
+            if (currentStep === totalSteps) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'flex';
+            } else {
+                nextBtn.style.display = 'flex';
+                submitBtn.style.display = 'none';
+            }
+        }
+
+        function validateStep(step) {
+            let isValid = true;
+
+            // Clear previous errors
+            document.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
+            document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
+
+            if (step === 1) {
+                if (!document.getElementById('selectedService').value) {
+                    document.getElementById('serviceError').style.display = 'block';
+                    isValid = false;
+                }
+            }
+            if (step === 2) {
+                if (!document.getElementById('bookingDate').value) {
+                    document.getElementById('dateGroup').classList.add('field-error');
+                    isValid = false;
+                }
+                if (!document.getElementById('selectedTimeSlot').value) {
+                    document.getElementById('timeGroup').classList.add('field-error');
+                    isValid = false;
+                }
+            }
+            if (step === 3) {
+                const config = [
+                    { id: 'userName', group: 'nameGroup' },
+                    { id: 'userPhone', group: 'phoneGroup' },
+                    { id: 'userEmail', group: 'emailGroup' },
+                    { id: 'userCity', group: 'cityGroup' },
+                    { id: 'userAddress', group: 'addressGroup' }
+                ];
+
+                config.forEach(field => {
+                    const input = document.getElementById(field.id);
+                    if (!input.value.trim()) {
+                        document.getElementById(field.group).classList.add('field-error');
+                        isValid = false;
+                    }
+                });
+            }
+
+            if (!isValid) {
+                const firstError = document.querySelector('.field-error, .error-msg[style*="display: block"]');
+                if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            return isValid;
+        }
+
+        async function saveAndSearch() {
+            const formData = new FormData(form);
+            nextBtn.disabled = true;
+            nextBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Finding workers...';
+
+            try {
+                // 1. Create Initial Booking
+                const response = await fetch('/api/bookings', {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Saving failed');
+
+                bookingId = data.booking_id;
+
+                // 2. Search for workers
+                const service = formData.get('service');
+                const city = formData.get('city');
+
+                const wResp = await fetch(`/api/workers/search?service=${encodeURIComponent(service)}&location=${encodeURIComponent(city)}`, {
+                    credentials: 'include'
+                });
+                const wData = await wResp.json();
+
+                renderWorkers(wData.workers || []);
+                goToStep(4);
+            } catch (err) {
+                alert('Error: ' + err.message);
+            } finally {
+                nextBtn.disabled = false;
+                nextBtn.innerHTML = 'Continue <i class="fas fa-arrow-right"></i>';
+            }
+        }
+
+        function renderWorkers(workers) {
+            const container = document.getElementById('workersList');
+            container.innerHTML = '';
+
+            if (workers.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; border: 1px dashed var(--border); border-radius: 15px;">
+                        <i class="fas fa-search-minus" style="font-size: 2rem; color: var(--text-light); margin-bottom: 10px;"></i>
+                        <p>No professionals found in your city for this service.</p>
+                        <p style="font-size: 0.8rem; color: var(--text-light);">Try changing your search criteria or city.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            workers.forEach(w => {
+                const card = document.createElement('div');
+                card.className = 'worker-card';
+                card.innerHTML = `
+                    <img src="${w.profile_picture_path || 'https://via.placeholder.com/150'}" class="worker-img">
+                    <div class="worker-info">
+                        <div class="worker-name">${w.full_name}</div>
+                        <div class="worker-stats">
+                            <span><i class="fas fa-star"></i> ${w.rating || '4.8'}</span>
+                            <span><i class="fas fa-briefcase"></i> ${w.experience || '3'}+ yrs</span>
+                        </div>
+                    </div>
+                    <div class="select-mark"><i class="fas fa-check"></i></div>
+                `;
+                card.onclick = () => {
+                    document.querySelectorAll('.worker-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    document.getElementById('selectedWorkerId').value = w._id;
+                    updateSummary();
+                };
+                container.appendChild(card);
+            });
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const workerId = document.getElementById('selectedWorkerId').value;
+            if (!workerId) {
+                alert('Please select a professional.');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Confirming...';
+
+            try {
+                const response = await fetch(`/api/bookings/${bookingId}/worker`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ worker_id: workerId }),
+                    credentials: 'include'
+                });
+
+                if (!response.ok) throw new Error('Failed to confirm booking');
+
+                // Success View
+                document.querySelector('.booking-grid').innerHTML = `
+                    <div style="grid-column: 1/-1; background: var(--white); padding: 80px 40px; border-radius: 20px; text-align: center; box-shadow: var(--shadow);">
+                        <div style="width: 80px; height: 80px; background: var(--success); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto 30px;">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <h2 style="font-size: 2rem; color: var(--primary-dark); margin-bottom: 10px;">Booking Confirmed!</h2>
+                        <p style="color: var(--text-light); margin-bottom: 40px;">Your professional has been assigned and will arrive at the scheduled time.</p>
+                        <div style="display: flex; gap: 15px; justify-content: center;">
+                            <a href="home.html" class="btn btn-prev">Go Dashboard</a>
+                            <a href="bookings.php" class="btn btn-next">View My Bookings</a>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('stepper').innerHTML = '';
+            } catch (err) {
+                alert('Error: ' + err.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Confirm Booking <i class="fas fa-check"></i>';
+            }
+        });
+
+        function updateSummary() {
+            const service = document.getElementById('selectedService').value;
+            const date = document.getElementById('bookingDate').value;
+            const time = document.getElementById('selectedTimeSlot').value;
+            const container = document.getElementById('summaryContent');
+
+            if (!service) return;
+
+            // Simplified pricing logic for professional feel
+            const basePrice = 499; // Demo price
+            document.getElementById('totalAmount').textContent = '₹' + basePrice;
+
+            container.innerHTML = `
+                <div class="summary-item">
+                    <span class="summary-label">Service</span>
+                    <span class="summary-value">${service}</span>
+                </div>
+                ${date ? `
+                <div class="summary-item">
+                    <span class="summary-label">Date</span>
+                    <span class="summary-value">${new Date(date).toLocaleDateString()}</span>
+                </div>` : ''}
+                ${time ? `
+                <div class="summary-item">
+                    <span class="summary-label">Time</span>
+                    <span class="summary-value">${time}</span>
+                </div>` : ''}
+            `;
+        }
+
+        // Initialize minimum date
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('bookingDate').min = today;
+
+        // Geolocation
+        const locateBtn = document.getElementById('locateMeBtn');
+        if (locateBtn) {
+            locateBtn.addEventListener('click', async () => {
+                if (!navigator.geolocation) {
+                    alert('Geolocation is not supported by your browser');
+                    return;
+                }
+
+                const original = locateBtn.innerHTML;
+                locateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating...';
+                locateBtn.disabled = true;
+
+                try {
+                    const pos = await new Promise((resolve, reject) => {
+                        navigator.geolocation.getCurrentPosition(resolve, reject, {
+                            enableHighAccuracy: true,
+                            timeout: 10000
+                        });
+                    });
+
+                    const { latitude, longitude } = pos.coords;
+                    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`;
+                    const resp = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                    const geo = await resp.json();
+
+                    const display = geo.display_name || '';
+                    const city = (geo.address && (geo.address.city || geo.address.town || geo.address.village || geo.address.county)) || '';
+
+                    document.getElementById('userAddress').value = display;
+                    if (city) document.getElementById('userCity').value = city;
+
+                    updateSummary();
+                } catch (err) {
+                    console.error('Geo error:', err);
+                    alert('Unable to fetch your location accurately. Please enter it manually.');
+                } finally {
+                    locateBtn.innerHTML = original;
+                    locateBtn.disabled = false;
+                }
+            });
+        }
+
+        // Auto-fill user data
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await checkAuth(true);
+            if (user) {
+                document.getElementById('userName').value = (user.firstName + ' ' + (user.lastName || '')).trim();
+                document.getElementById('userEmail').value = user.email || '';
+                document.getElementById('userCity').value = user.city || '';
+                document.getElementById('userAddress').value = user.address || '';
+            }
+        });
+    </script>
+</body>
+
+</html>
