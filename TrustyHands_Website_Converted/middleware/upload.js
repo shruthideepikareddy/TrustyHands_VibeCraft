@@ -39,10 +39,10 @@ const uploadIdProof = multer({
     fileFilter: fileFilter(['.pdf', '.jpg', '.jpeg', '.png'])
 });
 
-// Profile Picture upload (JPG, JPEG, PNG - Max 1MB)
+// Profile Picture upload (JPG, JPEG, PNG - Max 5MB)
 const uploadProfilePicture = multer({
     storage: storage,
-    limits: { fileSize: 1 * 1024 * 1024 }, // 1MB
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
     fileFilter: fileFilter(['.jpg', '.jpeg', '.png'])
 });
 

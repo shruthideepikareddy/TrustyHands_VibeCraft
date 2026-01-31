@@ -553,11 +553,11 @@
 
         // Handle image upload on profile page
         document.addEventListener('change', function(e) {
-            if (e.target.id === 'imageInput' && e.target.closest('#mainContainer')) {
+            if (e.target && e.target.id === 'imageInput') {
                 const file = e.target.files[0];
                 if (file) {
-                    if (file.size > 1024 * 1024) {
-                        alert('Image size must be less than 1MB');
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('Image size must be less than 5MB');
                         e.target.value = '';
                         return;
                     }
@@ -573,6 +573,7 @@
             try {
                 const response = await fetch('/api/auth/profile', {
                     method: 'PUT',
+                    credentials: 'include',
                     body: formData
                 });
                 const data = await response.json();
@@ -600,8 +601,8 @@
 
             const imageFile = document.getElementById('imageInput').files[0];
             if (imageFile) {
-                if (imageFile.size > 1024 * 1024) {
-                    alertDiv.innerHTML = '<div class="alert alert-error">Image size must be less than 1MB</div>';
+                if (imageFile.size > 5 * 1024 * 1024) {
+                    alertDiv.innerHTML = '<div class="alert alert-error">Image size must be less than 5MB</div>';
                     alertDiv.style.display = 'block';
                     return;
                 }
