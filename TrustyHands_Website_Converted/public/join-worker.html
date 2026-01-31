@@ -567,7 +567,7 @@
                             <p>Click to upload ID document</p>
                             <span class="upload-btn">Choose File</span>
                             <input type="file" id="id_proof" name="id_proof" accept=".pdf,.jpg,.jpeg,.png"
-                                style="display: none;" required>
+                                style="display: none;">
                         </div>
                         <p class="small" style="margin-top: 8px; color: var(--text-light); font-size: 0.8rem;">
                             (Accepted formats: PDF, JPG, PNG. Max size: 2MB)
@@ -680,7 +680,7 @@
                                 <p>Click to upload profile photo</p>
                                 <span class="upload-btn">Choose File</span>
                                 <input type="file" id="profile_picture" name="profile_picture" accept=".jpg,.jpeg,.png"
-                                    style="display: none;" required>
+                                    style="display: none;">
                             </div>
                             <p class="small" style="margin-top: 8px; color: var(--text-light); font-size: 0.8rem;">
                                 (Accepted formats: JPG, PNG. Max size: 1MB)
@@ -922,10 +922,12 @@
             e.preventDefault();
             notificationArea.innerHTML = '';
 
-            const submitBtn = document.getElementById('submitBtn');
-            const originalBtnText = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            const submitBtn = document.querySelector('.submit-btn');
+            const originalBtnText = submitBtn ? submitBtn.innerHTML : '';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            }
 
             try {
                 const formData = new FormData(form);
@@ -982,8 +984,10 @@
                 `;
                 window.scrollTo(0, 0);
             } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                }
             }
         });
     </script>
