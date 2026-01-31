@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - TrustyHands</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/index.css">
+    <style>
+        body {
+            background-color: #fce4ec;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .header-bar h2 {
+            color: #333;
+            margin: 0;
+        }
+
+        .btn-home {
+            background-color: #333;
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .btn-home:hover {
+            background-color: #555;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .profile-img-container {
+            width: 80px;
+            height: 80px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .profile-info h3 {
+            margin: 0;
+            color: #222;
+        }
+
+        .profile-info p {
+            margin: 2px 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 15px;
+            border-left: 4px solid #ff4081;
+            padding-left: 10px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .detail-item {
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .detail-item strong {
+            display: block;
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .detail-item span {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .btn-edit,
+        .btn-logout {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            text-align: center;
+            transition: 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-edit {
+            background-color: #ff4081;
+            color: #fff;
+            margin-right: 10px;
+        }
+
+        .btn-edit:hover {
+            background-color: #e91e63;
+        }
+
+        .btn-logout {
+            background-color: #ddd;
+            color: #333;
+        }
+
+        .btn-logout:hover {
+            background-color: #bbb;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2rem;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container" id="mainContainer">
+        <div class="loading">Loading profile...</div>
+    </div>
+
+    <!-- Template for populated content -->
+    <template id="profileTemplate">
+        <div class="header-bar">
+            <h2>User Profile</h2>
+            <a href="home.html" class="btn-home"><i class="fas fa-home"></i> Back to Home</a>
+        </div>
+
+        <div class="profile-header">
+            <div class="profile-img-container" id="profileInitials">
+                U
+            </div>
+            <div class="profile-info">
+                <h3 id="profileName">User Name</h3>
+                <p id="profileEmail">email@example.com</p>
+                <p id="profileRoleBadge" style="margin-top: 5px;"><span
+                        style="background: #eee; padding: 2px 8px; border-radius: 4px; font-size: 12px;">User</span></p>
+            </div>
+        </div>
+
+        <!-- Personal Information -->
+        <div class="section-title">Personal Information</div>
+        <div class="details-grid">
+            <div class="detail-item">
+                <strong>Full Name</strong>
+                <span id="detailName">User Name</span>
+            </div>
+            <div class="detail-item">
+                <strong>Email Address</strong>
+                <span id="detailEmail">email@example.com</span>
+            </div>
+        </div>
+
+        <!-- Worker Details (Conditional) -->
+        <div id="workerSection" style="display: none;">
+            <div class="section-title">Worker Profile</div>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <strong>Service Type</strong>
+                    <span id="workerService">N/A</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Phone</strong>
+                    <span id="workerPhone">N/A</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Location</strong>
+                    <span id="workerLocation">N/A</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Payment Mode</strong>
+                    <span id="workerPayment">N/A</span>
+                </div>
+                <div class="detail-item" style="grid-column: span 2;">
+                    <strong>Experience / Description</strong>
+                    <span id="workerExperience">N/A</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer Details (Conditional) -->
+        <div id="customerSection" style="display: none;">
+            <div class="section-title">Customer Profile</div>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <strong>Phone</strong>
+                    <span id="customerPhone">N/A</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Address</strong>
+                    <span id="customerAddress">N/A</span>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <!-- Note: Edit functionality would technically require more forms, keeping it simple for now or linking to contact -->
+            <button onclick="logout()" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </template>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth-check.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check auth (protected)
+            const user = await checkAuth(true);
+            if (!user) return; // Redirecting...
+
+            try {
+                // Fetch full profile
+                const response = await fetch('/api/auth/profile');
+                const data = await response.json();
+
+                if (data.success) {
+                    renderProfile(data);
+                } else {
+                    alert('Failed to load profile details: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                document.getElementById('mainContainer').innerHTML = '<div class="loading">Error loading profile. Please try again.</div>';
+            }
+        });
+
+        function renderProfile(data) {
+            const container = document.getElementById('mainContainer');
+            const template = document.getElementById('profileTemplate');
+            const content = template.content.cloneNode(true);
+            const user = data.user;
+
+            // Basic Info
+            const initial = user.firstName.charAt(0).toUpperCase();
+            content.getElementById('profileInitials').textContent = initial;
+            const fullName = `${user.firstName} ${user.lastName || ''}`.trim();
+            content.getElementById('profileName').textContent = fullName;
+            content.getElementById('profileEmail').textContent = user.email;
+            content.getElementById('detailName').textContent = fullName;
+            content.getElementById('detailEmail').textContent = user.email;
+
+            // Roles
+            const roles = [];
+            if (data.is_worker) roles.push('Worker');
+            if (data.is_customer) roles.push('Customer');
+            if (roles.length === 0) roles.push('User');
+            content.getElementById('profileRoleBadge').innerHTML = roles.map(r =>
+                `<span style="background: #333; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-right: 5px;">${r}</span>`
+            ).join('');
+
+            // Worker Section
+            if (data.is_worker && data.worker) {
+                const w = data.worker;
+                content.getElementById('workerSection').style.display = 'block';
+                content.getElementById('workerService').textContent = w.service_type;
+                content.getElementById('workerPhone').textContent = w.phone_number;
+                content.getElementById('workerLocation').textContent = w.location;
+                content.getElementById('workerPayment').textContent = w.payment_mode;
+                content.getElementById('workerExperience').textContent = w.experience || 'No description provided';
+            }
+
+            // Customer Section
+            if (data.is_customer && data.customer) {
+                const c = data.customer;
+                content.getElementById('customerSection').style.display = 'block';
+                content.getElementById('customerPhone').textContent = c.phone_number;
+                content.getElementById('customerAddress').textContent = c.address;
+            }
+
+            container.innerHTML = '';
+            container.appendChild(content);
+        }
+    </script>
+</body>
+
+</html>

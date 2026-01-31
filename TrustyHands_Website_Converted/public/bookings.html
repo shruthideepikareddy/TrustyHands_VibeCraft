@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - TrustyHands</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/index.css">
+    <style>
+        body {
+            background-color: #fce4ec;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .header-bar h2 {
+            color: #333;
+            margin: 0;
+        }
+
+        .btn-home {
+            background-color: #333;
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .btn-home:hover {
+            background-color: #555;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .booking-card {
+            background: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .booking-card:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        .booking-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background-color: #ffeeba;
+            color: #856404;
+        }
+
+        .status-confirmed {
+            background-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .status-completed {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .detail-group {
+            margin-bottom: 10px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #777;
+            font-weight: 600;
+            display: block;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .booking-actions {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-complete {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-complete:hover {
+            background-color: #218838;
+        }
+
+        .no-bookings {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header-bar">
+            <h2>Your Bookings</h2>
+            <a href="home.html" class="btn-home"><i class="fas fa-home"></i> Back to Home</a>
+        </div>
+
+        <div id="statusMessage"></div>
+        <div id="bookingsList">
+            <div class="booking-card" style="text-align:center; padding: 40px;">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                <p>Loading bookings...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template for booking card -->
+    <template id="bookingTemplate">
+        <div class="booking-card">
+            <div class="booking-header">
+                <h3 style="margin:0; font-size:18px; color: #333;">
+                    <i class="fas fa-calendar-check" style="margin-right:8px; color:#ff4081;"></i>
+                    <span class="booking-service">Service Name</span>
+                </h3>
+                <span class="booking-status">Pending</span>
+            </div>
+
+            <div class="booking-details">
+                <div class="detail-group">
+                    <span class="detail-label">Booking Date</span>
+                    <span class="detail-value booking-date">Jan 1, 2024</span>
+                </div>
+                <div class="detail-group">
+                    <span class="detail-label">Customer</span>
+                    <span class="detail-value booking-customer">Name</span>
+                </div>
+                <div class="detail-group">
+                    <span class="detail-label">Worker</span>
+                    <span class="detail-value booking-worker">Not Assigned</span>
+                </div>
+                <div class="detail-group">
+                    <span class="detail-label">Payment</span>
+                    <span class="detail-value booking-payment">Cash</span>
+                </div>
+                <div class="detail-group" style="grid-column: span 2;">
+                    <span class="detail-label">Problem Description</span>
+                    <span class="detail-value booking-desc">Description...</span>
+                </div>
+            </div>
+
+            <div class="booking-actions">
+                <!-- Buttons will be injected here -->
+            </div>
+        </div>
+    </template>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth-check.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await checkAuth(true); // Protected
+            if (!user) return;
+
+            loadBookings();
+        });
+
+        async function loadBookings() {
+            try {
+                const response = await fetch('/api/bookings/user');
+                const data = await response.json();
+
+                const list = document.getElementById('bookingsList');
+                list.innerHTML = '';
+
+                if (data.success) {
+                    if (data.bookings.length === 0) {
+                        list.innerHTML = '<div class="no-bookings">You have no booking history yet.</div>';
+                        return;
+                    }
+
+                    const template = document.getElementById('bookingTemplate');
+
+                    data.bookings.forEach(booking => {
+                        const card = template.content.cloneNode(true);
+
+                        // Populate
+                        card.querySelector('.booking-service').textContent = booking.service_type;
+                        card.querySelector('.booking-date').textContent = new Date(booking.preferred_date).toLocaleDateString();
+                        card.querySelector('.booking-customer').textContent = booking.customer_id ? booking.customer_id.full_name : 'Unknown';
+
+                        const workerName = booking.worker_id ? booking.worker_id.full_name : 'Pending Assignment';
+                        card.querySelector('.booking-worker').textContent = workerName;
+                        card.querySelector('.booking-worker').style.color = booking.worker_id ? '#333' : '#e67e22';
+
+                        card.querySelector('.booking-payment').textContent = booking.payment_mode;
+                        card.querySelector('.booking-desc').textContent = booking.problem_description || 'None';
+
+                        // Status
+                        const statusEl = card.querySelector('.booking-status');
+                        statusEl.textContent = booking.status || 'Pending';
+                        statusEl.classList.add('status-' + (booking.status || 'Pending').toLowerCase());
+
+                        // Actions
+                        const actionsDiv = card.querySelector('.booking-actions');
+                        if (booking.status !== 'Completed' && booking.status !== 'Cancelled') {
+                            const completeBtn = document.createElement('button');
+                            completeBtn.className = 'btn-complete';
+                            completeBtn.innerHTML = '<i class="fas fa-check"></i> Mark as Completed';
+                            completeBtn.onclick = () => completeBooking(booking._id);
+                            actionsDiv.appendChild(completeBtn);
+                        } else {
+                            actionsDiv.style.display = 'none';
+                        }
+
+                        list.appendChild(card);
+                    });
+                } else {
+                    list.innerHTML = `<div class="alert alert-error">Error: ${data.error}</div>`;
+                }
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                document.getElementById('bookingsList').innerHTML = '<div class="alert alert-error">Failed to connect to server.</div>';
+            }
+        }
+
+        async function completeBooking(id) {
+            if (!confirm('Are you sure you want to mark this booking as completed?')) return;
+
+            try {
+                const response = await fetch(`/api/bookings/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'Completed' })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    // Show success
+                    const msg = document.getElementById('statusMessage');
+                    msg.innerHTML = '<div class="alert alert-success">Booking updated successfully!</div>';
+                    setTimeout(() => msg.innerHTML = '', 3000);
+                    // Reload
+                    loadBookings();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error updating booking:', error);
+                alert('An error occurred.');
+            }
+        }
+    </script>
+</body>
+
+</html>
