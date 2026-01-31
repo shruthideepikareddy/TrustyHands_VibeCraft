@@ -625,13 +625,11 @@
 
 <body>
     <header>
-        <div class="container">
-            <div class="header-container">
-                <a href="#" class="logo">
-                    <i class="fas fa-hands-helping"></i>
-                    TrustyHands
-                </a>
-            </div>
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-hands-helping"></i>
+                <span>Trustyhands</span>
+            </a>
         </div>
     </header>
 
@@ -777,191 +775,194 @@
                 <div class="worker-selection">
                     <h2 class="section-title">Select a Professional</h2>
                     <p style="text-align: center; margin-bottom: 30px; color: var(--text-light);">
-                        Based on your service <strong><span id="selectedServiceDisplay"></span></strong> in <strong><span id="selectedCityDisplay"></span></strong>
+                        Based on your service <strong><span id="selectedServiceDisplay"></span></strong> in
+                        <strong><span id="selectedCityDisplay"></span></strong>
                     </p>
 
                     <div class="workers-grid" id="workersList">
                         <!-- Workers populated via JS -->
-                         <div class="worker-card" style="grid-column: 1/-1; padding: 40px; text-align: center;">
+                        <div class="worker-card" style="grid-column: 1/-1; padding: 40px; text-align: center;">
                             <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: var(--primary);"></i>
                             <p style="margin-top: 15px;">Searching for available workers...</p>
-                         </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <footer>
-            <div class="container">
-                <div class="footer-content">
-                    <div class="footer-column">
-                        <div class="logo" style="margin-bottom: 15px; font-size: 20px; color: var(--earth-yellow);">
-                            <i class="fas fa-hands-helping"></i>
-                            <span>Trustyhands</span>
-                        </div>
-                        <p style="font-size: 0.9rem; max-width: 300px; margin-bottom: 18px; color: var(--text-footer);">
-                            Connecting customers with trusted local workers for any task, anytime, anywhere.</p>
-                        <div class="social-icons">
-                            <a href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#"><i class="fab fa-twitter"></i></a>
-                            <a href="#"><i class="fab fa-instagram"></i></a>
-                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                        </div>
+    </div>
+    </div>
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <div class="logo" style="margin-bottom: 15px; font-size: 20px; color: var(--earth-yellow);">
+                        <i class="fas fa-hands-helping"></i>
+                        <span>Trustyhands</span>
                     </div>
-                    <div class="footer-column">
-                        <h3>Company</h3>
-                        <ul>
-                            <li><a href="home.html">Home</a></li>
-                            <li><a href="about.html">About Us</a></li>
-                            <li><a href="services.html">Services</a></li>
-                            <li><a href="how-it-works.html">How it Works</a></li>
-                            <li><a href="contact.html">Contact Us</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-column">
-                        <h3>Resources</h3>
-                        <ul>
-                            <li><a href="helpcenter.php">Help Center</a></li>
-                            <li><a href="safety.php">Safety Guidelines</a></li>
-                            <li><a href="worker_resources.php">Worker Resources</a></li>
-                            <li><a href="customer_resources.php">Customer Resources</a></li>
-                            <li><a href="community.php">Community</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-column">
-                        <h3>Legal</h3>
-                        <ul>
-                            <li><a href="terms.php">Terms of Service</a></li>
-                            <li><a href="Privacy_Policy.php">Privacy Policy</a></li>
-                            <li><a href="Worker_Agreement.php">Worker Agreement</a></li>
-                            <li><a href="Cookie_Policy.php">Cookie Policy</a></li>
-                            <li><a href="GDPR.php">GDPR Compliance</a></li>
-                        </ul>
+                    <p style="font-size: 0.9rem; max-width: 300px; margin-bottom: 18px; color: var(--text-footer);">
+                        Connecting customers with trusted local workers for any task, anytime, anywhere.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
-                <div class="copyright">
-                    <p>&copy; 2025 Trustyhands. All rights reserved. Premium Service Platform</p>
+                <div class="footer-column">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="home.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="how-it-works.html">How it Works</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="helpcenter.php">Help Center</a></li>
+                        <li><a href="safety.php">Safety Guidelines</a></li>
+                        <li><a href="worker_resources.php">Worker Resources</a></li>
+                        <li><a href="customer_resources.php">Customer Resources</a></li>
+                        <li><a href="community.php">Community</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="terms.php">Terms of Service</a></li>
+                        <li><a href="Privacy_Policy.php">Privacy Policy</a></li>
+                        <li><a href="Worker_Agreement.php">Worker Agreement</a></li>
+                        <li><a href="Cookie_Policy.php">Cookie Policy</a></li>
+                        <li><a href="GDPR.php">GDPR Compliance</a></li>
+                    </ul>
                 </div>
             </div>
-        </footer>
+            <div class="copyright">
+                <p>&copy; 2025 Trustyhands. All rights reserved. Premium Service Platform</p>
+            </div>
+        </div>
+    </footer>
 
-        <script src="/js/api.js"></script>
-        <script src="/js/auth-check.js"></script>
-        <script>
-            // File upload functionality
-            const uploadArea = document.getElementById('upload-area');
-            const fileInput = document.getElementById('image');
+    <script src="/js/api.js"></script>
+    <script src="/js/auth-check.js"></script>
+    <script>
+        // File upload functionality
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('image');
 
-            if(uploadArea && fileInput) {
-                uploadArea.addEventListener('click', () => {
-                    fileInput.click();
-                });
+        if (uploadArea && fileInput) {
+            uploadArea.addEventListener('click', () => {
+                fileInput.click();
+            });
 
-                fileInput.addEventListener('change', (e) => {
-                    if (e.target.files.length > 0) {
-                        uploadArea.innerHTML = `
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    uploadArea.innerHTML = `
                         <i class="fas fa-check-circle"></i>
                         <p>File selected: ${e.target.files[0].name}</p>
                         <span class="upload-btn">Change File</span>
                     `;
-                    }
-                });
+                }
+            });
+        }
+
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        const dateInput = document.getElementById('date');
+        if (dateInput) dateInput.min = today;
+
+        // Booking Logic
+        let currentBookingId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check auth
+            const user = await checkAuth(true);
+            if (user) {
+                document.getElementById('full-name').value = (user.firstName + ' ' + (user.lastName || '')).trim();
+                document.getElementById('email').value = user.email || '';
             }
 
-            // Set minimum date to today
-            const today = new Date().toISOString().split('T')[0];
-            const dateInput = document.getElementById('date');
-            if(dateInput) dateInput.min = today;
+            // Handle Form Submission
+            const form = document.getElementById('bookingForm');
+            const notificationArea = document.getElementById('notificationArea');
 
-            // Booking Logic
-            let currentBookingId = null;
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-            document.addEventListener('DOMContentLoaded', async () => {
-                 // Check auth
-                 const user = await checkAuth(true);
-                 if(user) {
-                     document.getElementById('full-name').value = (user.firstName + ' ' + (user.lastName || '')).trim();
-                     document.getElementById('email').value = user.email || '';
-                 }
+                notificationArea.innerHTML = '';
+                const submitBtn = form.querySelector('.submit-btn');
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
-                 // Handle Form Submission
-                 const form = document.getElementById('bookingForm');
-                 const notificationArea = document.getElementById('notificationArea');
-                 
-                 form.addEventListener('submit', async (e) => {
-                     e.preventDefault();
-                     
-                     notificationArea.innerHTML = '';
-                     const submitBtn = form.querySelector('.submit-btn');
-                     const originalBtnText = submitBtn.innerHTML;
-                     submitBtn.disabled = true;
-                     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-
-                     try {
-                         const formData = new FormData(form);
-                         // Use api.js or direct fetch. 
-                         // Important: Do not set Content-Type header when sending FormData
-                         
-                         const response = await fetch('/api/bookings', {
-                             method: 'POST',
-                             body: formData,
-                             credentials: 'include'
-                         });
-
-                         const data = await response.json();
-
-                         if (!response.ok) throw new Error(data.message || 'Booking failed');
-
-                         currentBookingId = data.booking._id;
-                         const city = formData.get('city');
-                         const service = formData.get('service');
-
-                         notificationArea.innerHTML = `<div class="notification success">Booking saved! Searching for workers...</div>`;
-                         
-                         document.getElementById('bookingSection').style.display = 'none';
-                         document.getElementById('workerSelectionSection').style.display = 'block';
-                         document.getElementById('selectedServiceDisplay').textContent = service;
-                         document.getElementById('selectedCityDisplay').textContent = city;
-
-                         await searchWorkers(service, city);
-
-                     } catch (error) {
-                         console.error('Booking error:', error);
-                         notificationArea.innerHTML = `<div class="notification error">${error.message}</div>`;
-                         window.scrollTo(0, 0);
-                     } finally {
-                         submitBtn.disabled = false;
-                         submitBtn.innerHTML = originalBtnText;
-                     }
-                 });
-            });
-
-            async function searchWorkers(service, city) {
                 try {
-                    const response = await fetch(`/api/workers/search?service=${encodeURIComponent(service)}&location=${encodeURIComponent(city)}`, {
+                    const formData = new FormData(form);
+                    // Use api.js or direct fetch. 
+                    // Important: Do not set Content-Type header when sending FormData
+
+                    const response = await fetch('/api/bookings', {
+                        method: 'POST',
+                        body: formData,
                         credentials: 'include'
                     });
+
                     const data = await response.json();
-                    
-                    const workersList = document.getElementById('workersList');
-                    workersList.innerHTML = '';
 
-                    const workers = data.workers || [];
+                    if (!response.ok) throw new Error(data.message || 'Booking failed');
 
-                    if (workers.length === 0) {
-                        workersList.innerHTML = `
+                    currentBookingId = data.booking_id;
+                    const city = formData.get('city');
+                    const service = formData.get('service');
+
+                    notificationArea.innerHTML = `<div class="notification success">Booking saved! Searching for workers...</div>`;
+
+                    document.getElementById('bookingSection').style.display = 'none';
+                    document.getElementById('workerSelectionSection').style.display = 'block';
+                    document.getElementById('selectedServiceDisplay').textContent = service;
+                    document.getElementById('selectedCityDisplay').textContent = city;
+
+                    await searchWorkers(service, city);
+
+                } catch (error) {
+                    console.error('Booking error:', error);
+                    notificationArea.innerHTML = `<div class="notification error">${error.message}</div>`;
+                    window.scrollTo(0, 0);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                }
+            });
+        });
+
+        async function searchWorkers(service, city) {
+            try {
+                const response = await fetch(`/api/workers/search?service=${encodeURIComponent(service)}&location=${encodeURIComponent(city)}`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+
+                const workersList = document.getElementById('workersList');
+                workersList.innerHTML = '';
+
+                const workers = data.workers || [];
+
+                if (workers.length === 0) {
+                    workersList.innerHTML = `
                             <div style="grid-column: 1/-1; text-align: center; padding: 30px;">
                                 <i class="fas fa-search" style="font-size: 40px; color: #ccc; margin-bottom: 15px;"></i>
                                 <p>No workers matched your criteria.</p>
                                 <a href="home.html" class="btn" style="margin-top:10px; display:inline-block; padding:8px 15px; background:var(--primary); color:white; border-radius:5px;">Return to Home</a>
                             </div>
                         `;
-                        return;
-                    }
+                    return;
+                }
 
-                    workers.forEach(worker => {
-                        const card = document.createElement('div');
-                        card.className = 'worker-card';
-                        card.innerHTML = `
+                workers.forEach(worker => {
+                    const card = document.createElement('div');
+                    card.className = 'worker-card';
+                    card.innerHTML = `
                             <img src="${worker.profile_picture_path || 'https://via.placeholder.com/150'}" alt="${worker.full_name}" class="worker-image">
                             <div class="worker-name">${worker.full_name}</div>
                             <div class="worker-service">${worker.service_type}</div>
@@ -973,29 +974,29 @@
                                 Select & Confirm
                             </button>
                         `;
-                        workersList.appendChild(card);
-                    });
+                    workersList.appendChild(card);
+                });
 
-                } catch (error) {
-                    console.error('Search error:', error);
-                    document.getElementById('workersList').innerHTML = `<p style="color:red">Error loading workers.</p>`;
-                }
+            } catch (error) {
+                console.error('Search error:', error);
+                document.getElementById('workersList').innerHTML = `<p style="color:red">Error loading workers.</p>`;
             }
+        }
 
-            async function assignWorker(workerId) {
-                if (!currentBookingId) return;
-                
-                try {
-                    const response = await fetch(`/api/bookings/${currentBookingId}/worker`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ worker_id: workerId }),
-                        credentials: 'include'
-                    });
+        async function assignWorker(workerId) {
+            if (!currentBookingId) return;
 
-                    if (!response.ok) throw new Error('Failed to assign worker');
+            try {
+                const response = await fetch(`/api/bookings/${currentBookingId}/worker`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ worker_id: workerId }),
+                    credentials: 'include'
+                });
 
-                    document.getElementById('workerSelectionSection').innerHTML = `
+                if (!response.ok) throw new Error('Failed to assign worker');
+
+                document.getElementById('workerSelectionSection').innerHTML = `
                          <div style="text-align: center; padding: 50px;">
                             <i class="fas fa-check-circle" style="font-size: 60px; color: #27ae60; margin-bottom: 20px;"></i>
                             <h2 style="color: var(--primary);">Booking Confirmed!</h2>
@@ -1003,27 +1004,27 @@
                             <a href="bookings.html" class="btn" style="padding: 12px 25px; background: var(--primary); color: white; text-decoration: none; border-radius: 30px;">View My Bookings</a>
                          </div>
                     `;
-                    window.scrollTo(0, 0);
+                window.scrollTo(0, 0);
 
-                } catch (error) {
-                     alert('Error: ' + error.message);
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        function getStarRating(rating) {
+            let stars = '';
+            for (let i = 0; i < 5; i++) {
+                if (i < Math.floor(rating)) {
+                    stars += '<i class="fas fa-star"></i>';
+                } else if (i < rating) {
+                    stars += '<i class="fas fa-star-half-alt"></i>';
+                } else {
+                    stars += '<i class="far fa-star"></i>';
                 }
             }
-
-            function getStarRating(rating) {
-                let stars = '';
-                for (let i = 0; i < 5; i++) {
-                    if (i < Math.floor(rating)) {
-                        stars += '<i class="fas fa-star"></i>';
-                    } else if (i < rating) {
-                        stars += '<i class="fas fa-star-half-alt"></i>';
-                    } else {
-                        stars += '<i class="far fa-star"></i>';
-                    }
-                }
-                return stars;
-            }
-        </script>
+            return stars;
+        }
+    </script>
 </body>
 
 </html>
