@@ -1,278 +1,468 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile - TrustyHands</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --dark-moss-green: #606c38;
+            --pakistan-green: #283618;
+            --cornsilk: #fefae0;
+            --earth-yellow: #dda15e;
+            --tigers-eye: #bc6c25;
+            --primary: var(--dark-moss-green);
+            --secondary: var(--earth-yellow);
+            --accent: var(--tigers-eye);
+            --cornsilk: #fefae0;
+            --white: #ffffff;
+            --light-gray: #f8f9f8;
+            --text: #333;
+            --text-light: #666;
+            --text-footer: #ddd;
+            --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
         body {
-            background-color: #fce4ec;
-            font-family: 'Poppins', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            margin: 0;
+            font-family: 'Roboto', 'Poppins', sans-serif;
+            background-color: var(--cornsilk);
+            color: var(--text);
+            line-height: 1.6;
+            font-size: 14px;
             padding: 20px;
         }
-
         .container {
-            width: 100%;
-            max-width: 800px;
-            background: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            margin: 0 auto;
         }
-
         .header-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(96, 108, 56, 0.2);
         }
-
-        .header-bar h2 {
-            color: #333;
-            margin: 0;
-        }
-
-        .btn-home {
-            background-color: #333;
-            color: #fff;
-            padding: 8px 15px;
-            border-radius: 6px;
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--primary);
+            color: var(--white);
+            border-radius: 30px;
             text-decoration: none;
-            font-size: 14px;
-            transition: 0.3s;
+            font-weight: 500;
+            transition: var(--transition);
         }
-
-        .btn-home:hover {
-            background-color: #555;
+        .back-btn:hover { background: var(--tigers-eye); transform: translateY(-2px); }
+        .page-title { color: var(--primary); font-size: 1.8rem; font-weight: 600; }
+        .profile-card {
+            background: var(--white);
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            padding: 32px 36px 30px 36px;
+            margin-top: 20px;
         }
-
         .profile-header {
             display: flex;
             align-items: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #f0f0f0;
+            gap: 30px;
+            padding-bottom: 28px;
+            border-bottom: 1.2px solid #ededed;
+            margin-bottom: 32px;
         }
-
         .profile-img-container {
-            width: 80px;
-            height: 80px;
-            background-color: #333;
-            color: #fff;
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--white);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
-            font-weight: bold;
+            font-size: 38px;
+            font-weight: 700;
+            position: relative;
+            overflow: visible;
+            flex-shrink: 0;
         }
-
+        .profile-img-container #profileInitials {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+        }
+        .profile-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 50%;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .profile-img-upload {
+            position: absolute;
+            bottom: -12px;
+            right: -12px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            border: 3px solid white;
+            transition: var(--transition);
+            z-index: 20;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+            opacity: 1;
+            transform: none;
+        }
+        .profile-img-upload:hover {
+            background: var(--accent);
+        }
         .profile-info h3 {
             margin: 0;
-            color: #222;
+            color: var(--primary);
+            font-size: 1.3rem;
         }
-
         .profile-info p {
-            margin: 2px 0;
-            color: #666;
-            font-size: 14px;
+            margin: 5px 0 6px 0;
+            color: var(--text-light);
+            font-size: 1.05rem;
         }
-
+        .profile-info .role-badge {
+            background: var(--primary);
+            color: #fff;
+            padding: 2px 11px;
+            border-radius: 12px;
+            font-size: .93rem;
+            font-weight: 500;
+            display: inline-block;
+        }
         .section-title {
-            font-size: 18px;
+            color: var(--primary);
+            font-size: 1.22rem;
             font-weight: 600;
-            color: #444;
-            margin-bottom: 15px;
-            border-left: 4px solid #ff4081;
-            padding-left: 10px;
+            border-left: 5px solid var(--accent);
+            padding-left: 13px;
+            margin-top: 17px;
+            margin-bottom: 18px;
         }
-
         .details-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: 18px;
+            margin-bottom: 10px;
         }
-
         .detail-item {
-            background: #fafafa;
-            padding: 15px;
-            border-radius: 8px;
+            background: var(--light-gray);
+            padding: 16px 15px 14px 15px;
+            border-radius: 9px;
             border: 1px solid #e0e0e0;
         }
-
         .detail-item strong {
-            display: block;
             font-size: 13px;
-            color: #888;
-            margin-bottom: 5px;
+            color: var(--text-light);
+            display: block;
+            margin-bottom: 6px;
         }
-
         .detail-item span {
-            font-size: 16px;
-            color: #333;
+            font-size: 1.07rem;
+            color: var(--text);
             font-weight: 500;
         }
-
-        .btn-edit,
-        .btn-logout {
-            display: inline-block;
-            padding: 10px 20px;
-            margin-top: 10px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 14px;
-            text-align: center;
-            transition: 0.3s;
-            cursor: pointer;
+        .btn-edit, .btn-logout {
+            margin-top: 38px;
+            background: var(--primary);
+            color: var(--white);
             border: none;
-        }
-
-        .btn-edit {
-            background-color: #ff4081;
-            color: #fff;
+            border-radius: 9px;
+            font-size: 1rem;
+            padding: 10px 28px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
             margin-right: 10px;
         }
-
-        .btn-edit:hover {
-            background-color: #e91e63;
-        }
-
+        .btn-edit:hover { background: var(--accent); }
         .btn-logout {
-            background-color: #ddd;
-            color: #333;
+            background: var(--tigers-eye);
         }
-
-        .btn-logout:hover {
-            background-color: #bbb;
-        }
-
+        .btn-logout:hover { background: var(--primary); }
         .loading {
             text-align: center;
-            padding: 50px;
-            font-size: 1.2rem;
-            color: #666;
+            padding: 55px 0;
+            font-size: 1.08rem;
+            color: #888;
+        }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: var(--white);
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 14px;
+            max-width: 500px;
+            box-shadow: var(--shadow);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(96, 108, 56, 0.2);
+        }
+        .modal-header h2 {
+            color: var(--primary);
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .close:hover { color: var(--accent); }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+            box-sizing: border-box;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(96, 108, 56, 0.2);
+        }
+        .form-file-input {
+            display: none;
+        }
+        .file-input-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--light-gray);
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: var(--transition);
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .file-input-label:hover {
+            background: rgba(96, 108, 56, 0.05);
+            border-color: var(--primary);
+        }
+        .preview-image {
+            margin-top: 10px;
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .btn-submit {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 9px;
+            font-size: 1rem;
+            padding: 12px 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-submit:hover { background: var(--accent); }
+        .alert {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
         }
     </style>
 </head>
-
 <body>
-
-    <div class="container" id="mainContainer">
-        <div class="loading">Loading profile...</div>
+    <div class="container">
+        <div class="header-bar">
+            <a href="home.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+            <h1 class="page-title">User Profile</h1>
+        </div>
+        <div class="profile-card" id="mainContainer">
+            <div class="loading">Loading profile...</div>
+        </div>
+        <template id="profileTemplate">
+            <div class="profile-header">
+                <div class="profile-img-container" id="profileImgContainer">
+                    <span id="profileInitials">U</span>
+                    <img id="profileImage" style="display: none;" alt="Profile">
+                    <div class="profile-img-upload" onclick="document.getElementById('imageInput').click()" title="Change Profile Picture">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+                <div class="profile-info">
+                    <h3 id="profileName">User Name</h3>
+                    <p id="profileEmail">email@example.com</p>
+                    <span class="role-badge" id="profileRoleBadge">User</span>
+                </div>
+            </div>
+            <div class="section-title">Personal Information</div>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <strong>Full Name</strong>
+                    <span id="detailName">User Name</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Email Address</strong>
+                    <span id="detailEmail">email@example.com</span>
+                </div>
+            </div>
+            <!-- Worker Section -->
+            <div id="workerSection" style="display: none;">
+                <div class="section-title">Worker Profile</div>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <strong>Service Type</strong><span id="workerService">N/A</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Phone</strong><span id="workerPhone">N/A</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Location</strong><span id="workerLocation">N/A</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Payment Mode</strong><span id="workerPayment">N/A</span>
+                    </div>
+                    <div class="detail-item" style="grid-column: span 2;">
+                        <strong>Experience / Description</strong><span id="workerExperience">N/A</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Customer Section -->
+            <div id="customerSection" style="display: none;">
+                <div class="section-title">Customer Profile</div>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <strong>Phone</strong><span id="customerPhone">N/A</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Address</strong><span id="customerAddress">N/A</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <button onclick="openEditModal()" class="btn-edit"><i class="fas fa-edit"></i> Edit Profile</button>
+                <button onclick="logout()" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </template>
     </div>
 
-    <!-- Template for populated content -->
-    <template id="profileTemplate">
-        <div class="header-bar">
-            <h2>User Profile</h2>
-            <a href="home.html" class="btn-home"><i class="fas fa-home"></i> Back to Home</a>
-        </div>
-
-        <div class="profile-header">
-            <div class="profile-img-container" id="profileInitials">
-                U
+    <!-- Edit Profile Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Profile</h2>
+                <span class="close" onclick="closeEditModal()">&times;</span>
             </div>
-            <div class="profile-info">
-                <h3 id="profileName">User Name</h3>
-                <p id="profileEmail">email@example.com</p>
-                <p id="profileRoleBadge" style="margin-top: 5px;"><span
-                        style="background: #eee; padding: 2px 8px; border-radius: 4px; font-size: 12px;">User</span></p>
-            </div>
+            <div id="alertMessage"></div>
+            <form id="editProfileForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="form-label">Profile Picture</label>
+                    <input type="file" id="imageInput" name="profileImage" accept="image/jpeg,image/jpg,image/png" class="form-file-input" onchange="previewImage(this)">
+                    <label for="imageInput" class="file-input-label">
+                        <i class="fas fa-upload"></i> Choose Image (JPG, PNG - Max 1MB)
+                    </label>
+                    <img id="imagePreview" class="preview-image" style="display: none;" alt="Preview">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">First Name</label>
+                    <input type="text" id="editFirstName" name="firstName" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" id="editLastName" name="lastName" class="form-input" required>
+                </div>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </form>
         </div>
-
-        <!-- Personal Information -->
-        <div class="section-title">Personal Information</div>
-        <div class="details-grid">
-            <div class="detail-item">
-                <strong>Full Name</strong>
-                <span id="detailName">User Name</span>
-            </div>
-            <div class="detail-item">
-                <strong>Email Address</strong>
-                <span id="detailEmail">email@example.com</span>
-            </div>
-        </div>
-
-        <!-- Worker Details (Conditional) -->
-        <div id="workerSection" style="display: none;">
-            <div class="section-title">Worker Profile</div>
-            <div class="details-grid">
-                <div class="detail-item">
-                    <strong>Service Type</strong>
-                    <span id="workerService">N/A</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Phone</strong>
-                    <span id="workerPhone">N/A</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Location</strong>
-                    <span id="workerLocation">N/A</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Payment Mode</strong>
-                    <span id="workerPayment">N/A</span>
-                </div>
-                <div class="detail-item" style="grid-column: span 2;">
-                    <strong>Experience / Description</strong>
-                    <span id="workerExperience">N/A</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Customer Details (Conditional) -->
-        <div id="customerSection" style="display: none;">
-            <div class="section-title">Customer Profile</div>
-            <div class="details-grid">
-                <div class="detail-item">
-                    <strong>Phone</strong>
-                    <span id="customerPhone">N/A</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Address</strong>
-                    <span id="customerAddress">N/A</span>
-                </div>
-            </div>
-        </div>
-
-        <div>
-            <!-- Note: Edit functionality would technically require more forms, keeping it simple for now or linking to contact -->
-            <button onclick="logout()" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
-        </div>
-    </template>
+    </div>
 
     <script src="/js/api.js"></script>
     <script src="/js/auth-check.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Check auth (protected)
-            const user = await checkAuth(true);
-            if (!user) return; // Redirecting...
+        let currentUserData = null;
 
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await checkAuth(true);
+            if (!user) return;
             try {
-                // Fetch full profile
                 const response = await fetch('/api/auth/profile');
                 const data = await response.json();
-
                 if (data.success) {
+                    currentUserData = data;
                     renderProfile(data);
                 } else {
                     alert('Failed to load profile details: ' + (data.error || 'Unknown error'));
                 }
             } catch (error) {
-                console.error('Error loading profile:', error);
                 document.getElementById('mainContainer').innerHTML = '<div class="loading">Error loading profile. Please try again.</div>';
             }
         });
@@ -283,9 +473,21 @@
             const content = template.content.cloneNode(true);
             const user = data.user;
 
-            // Basic Info
-            const initial = user.firstName.charAt(0).toUpperCase();
-            content.getElementById('profileInitials').textContent = initial;
+            // Profile Image
+            const imgContainer = content.getElementById('profileImgContainer');
+            const initials = content.getElementById('profileInitials');
+            const profileImg = content.getElementById('profileImage');
+
+            if (user.profileImage) {
+                profileImg.src = user.profileImage;
+                profileImg.style.display = 'block';
+                initials.style.display = 'none';
+            } else {
+                initials.textContent = user.firstName.charAt(0).toUpperCase();
+                initials.style.display = 'flex';
+                profileImg.style.display = 'none';
+            }
+
             const fullName = `${user.firstName} ${user.lastName || ''}`.trim();
             content.getElementById('profileName').textContent = fullName;
             content.getElementById('profileEmail').textContent = user.email;
@@ -297,9 +499,7 @@
             if (data.is_worker) roles.push('Worker');
             if (data.is_customer) roles.push('Customer');
             if (roles.length === 0) roles.push('User');
-            content.getElementById('profileRoleBadge').innerHTML = roles.map(r =>
-                `<span style="background: #333; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-right: 5px;">${r}</span>`
-            ).join('');
+            content.getElementById('profileRoleBadge').textContent = roles.join(', ');
 
             // Worker Section
             if (data.is_worker && data.worker) {
@@ -323,7 +523,130 @@
             container.innerHTML = '';
             container.appendChild(content);
         }
+
+        function openEditModal() {
+            if (!currentUserData) return;
+            const user = currentUserData.user;
+            document.getElementById('editFirstName').value = user.firstName;
+            document.getElementById('editLastName').value = user.lastName || '';
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('imageInput').value = '';
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            document.getElementById('alertMessage').innerHTML = '';
+        }
+
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Handle image upload on profile page
+        document.addEventListener('change', function(e) {
+            if (e.target.id === 'imageInput' && e.target.closest('#mainContainer')) {
+                const file = e.target.files[0];
+                if (file) {
+                    if (file.size > 1024 * 1024) {
+                        alert('Image size must be less than 1MB');
+                        e.target.value = '';
+                        return;
+                    }
+                    uploadProfileImage(file);
+                }
+            }
+        });
+
+        async function uploadProfileImage(file) {
+            const formData = new FormData();
+            formData.append('profileImage', file);
+
+            try {
+                const response = await fetch('/api/auth/profile', {
+                    method: 'PUT',
+                    body: formData
+                });
+                const data = await response.json();
+                if (data.success) {
+                    // Reload profile
+                    location.reload();
+                } else {
+                    alert('Error: ' + (data.error || 'Failed to upload image'));
+                }
+            } catch (error) {
+                alert('Error uploading image');
+            }
+        }
+
+        // Handle edit form submission
+        document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.innerHTML = '';
+            alertDiv.style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('firstName', document.getElementById('editFirstName').value.trim());
+            formData.append('lastName', document.getElementById('editLastName').value.trim());
+
+            const imageFile = document.getElementById('imageInput').files[0];
+            if (imageFile) {
+                if (imageFile.size > 1024 * 1024) {
+                    alertDiv.innerHTML = '<div class="alert alert-error">Image size must be less than 1MB</div>';
+                    alertDiv.style.display = 'block';
+                    return;
+                }
+                formData.append('profileImage', imageFile);
+            }
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/auth/profile', {
+                    method: 'PUT',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    alertDiv.innerHTML = '<div class="alert alert-success">Profile updated successfully!</div>';
+                    alertDiv.style.display = 'block';
+                    setTimeout(() => {
+                        closeEditModal();
+                        location.reload();
+                    }, 1000);
+                } else {
+                    alertDiv.innerHTML = `<div class="alert alert-error">${data.error || 'Failed to update profile'}</div>`;
+                    alertDiv.style.display = 'block';
+                }
+            } catch (error) {
+                alertDiv.innerHTML = '<div class="alert alert-error">Error updating profile. Please try again.</div>';
+                alertDiv.style.display = 'block';
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        }
     </script>
 </body>
-
 </html>
