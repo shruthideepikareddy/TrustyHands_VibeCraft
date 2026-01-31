@@ -999,6 +999,116 @@
             gap: 10px;
             width: 100%;
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: modalFadeIn 0.3s ease-out;
+            margin: auto;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 25px;
+        }
+
+        .modal-content h2 {
+            color: var(--pakistan-green);
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        .modal-content p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        /* Button styles for modal */
+        .modal-buttons .btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .modal-buttons .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .modal-buttons .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .modal-buttons .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .modal-buttons .btn-primary:hover {
+            background: var(--secondary);
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close:hover {
+            color: var(--primary);
+        }
     </style>
 </head>
 
@@ -1584,12 +1694,41 @@
         }
     </script>
 
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h2>Login Required</h2>
+            <p>Please login or signup to access all features of Trustyhands</p>
+            <div class="modal-buttons">
+                <a href="login.html" class="btn btn-outline">Log In</a>
+                <a href="login.html#signup" class="btn btn-primary">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
     <script src="/js/api.js"></script>
     <script src="/js/auth-check.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             // Check auth but don't redirect if not logged in (false = public)
             const user = await checkAuth(false);
+            const modal = document.getElementById("loginModal");
+            const closeBtn = document.querySelector(".close");
+
+            // Modal close logic
+            if (closeBtn) {
+                closeBtn.onclick = function () {
+                    modal.style.display = "none";
+                }
+            }
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
 
             if (user) {
                 // Initial check passed, populate UI
@@ -1611,6 +1750,24 @@
                 if (dropdownInitialsEl) dropdownInitialsEl.textContent = initials;
                 if (userNameEl) userNameEl.textContent = user.firstName + (user.lastName ? ' ' + user.lastName : '');
                 if (userEmailEl) userEmailEl.textContent = user.email;
+
+                // For logged in users, ensure buttons go to target pages
+                const actionButtons = document.querySelectorAll('a[href="book-worker.html"], a[href="join-worker.html"]');
+                actionButtons.forEach(btn => {
+                    btn.onclick = null; // Ensure default behavior
+                });
+
+            } else {
+                // User is NOT logged in - intercept clicks
+                const actionButtons = document.querySelectorAll('a[href="book-worker.html"], a[href="join-worker.html"]');
+                actionButtons.forEach(btn => {
+                    btn.onclick = function (e) {
+                        e.preventDefault();
+                        if (modal) {
+                            modal.style.display = "flex";
+                        }
+                    };
+                });
             }
         });
     </script>

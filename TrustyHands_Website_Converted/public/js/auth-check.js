@@ -29,10 +29,10 @@ async function logout() {
             method: 'POST',
             credentials: 'include'
         });
-        window.location.href = '/login.html';
+        window.location.href = 'index.html';
     } catch (error) {
         console.error('Logout error:', error);
-        window.location.href = '/login.html';
+        window.location.href = 'index.html';
     }
 }
 

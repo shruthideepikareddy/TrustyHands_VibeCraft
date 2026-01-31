@@ -894,66 +894,83 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-content {
             background-color: var(--white);
-            margin: 10% auto;
-            padding: 30px;
-            border-radius: 15px;
+            padding: 40px;
+            border-radius: 20px;
             max-width: 450px;
+            width: 90%;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
             position: relative;
-            animation: modalOpen 0.4s;
+            animation: modalFadeIn 0.3s ease-out;
+            margin: auto;
         }
 
-        @keyframes modalOpen {
+        @keyframes modalFadeIn {
             from {
                 opacity: 0;
-                transform: translateY(-60px);
+                transform: scale(0.9);
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: scale(1);
             }
         }
 
         .modal-icon {
-            font-size: 3.5rem;
+            font-size: 4rem;
             color: var(--primary);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .modal-content h2 {
-            color: var(--primary);
+            color: var(--pakistan-green);
             margin-bottom: 15px;
+            font-size: 1.8rem;
         }
 
         .modal-content p {
             font-size: 1.1rem;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             color: var(--text-light);
+            line-height: 1.5;
         }
 
         .modal-buttons {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-top: 10px;
+            gap: 20px;
         }
 
         .close {
             position: absolute;
-            top: 15px;
-            right: 20px;
+            top: 20px;
+            right: 25px;
             font-size: 28px;
             font-weight: bold;
             color: #aaa;
             cursor: pointer;
             transition: var(--transition);
+        }
+
+        .close:hover {
+            color: var(--primary);
+        }
+
+        right: 20px;
+        font-size: 28px;
+        font-weight: bold;
+        color: #aaa;
+        cursor: pointer;
+        transition: var(--transition);
         }
 
         .close:hover {
@@ -1524,6 +1541,19 @@
             const user = await checkAuth(false);
             const modals = document.querySelectorAll(".trigger-modal");
             const modal = document.getElementById("loginModal");
+            const closeBtn = document.querySelector(".close");
+
+            // Modal close logic
+            if (closeBtn) {
+                closeBtn.onclick = function () {
+                    modal.style.display = "none";
+                }
+            }
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
 
             if (user) {
                 // User is logged in
@@ -1541,7 +1571,7 @@
                     btn.onclick = function (e) {
                         e.preventDefault();
                         const text = btn.textContent.toLowerCase();
-                        if (text.includes('find') || text.includes('worker')) {
+                        if (text.includes('find')) {
                             window.location.href = 'book-worker.html';
                         } else if (text.includes('join')) {
                             window.location.href = 'join-worker.html';
@@ -1556,7 +1586,9 @@
                 modals.forEach(btn => {
                     btn.addEventListener("click", (e) => {
                         e.preventDefault();
-                        if (modal) modal.style.display = "block";
+                        if (modal) {
+                            modal.style.display = "flex";
+                        }
                     });
                 });
             }
