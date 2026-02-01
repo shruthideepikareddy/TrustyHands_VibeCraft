@@ -20,6 +20,9 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
+// Trust Proxy for Render/Heroku (Required for secure cookies behind load balancer)
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(cors({
     origin: true,
