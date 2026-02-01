@@ -1271,23 +1271,11 @@
                     throw new Error('Please enter your city to search for workers.');
                 }
 
-                // Ensure service is set in formData for booking creation
+                // Ensure service is set in formData for searching
                 formData.set('service', service);
 
-                // 1. Create Initial Booking in Backend
-                const response = await fetch('/api/bookings', {
-                    method: 'POST',
-                    body: formData,
-                    credentials: 'include'
-                });
-                const data = await response.json();
+                formData.set('service', service);
 
-                if (!response.ok) {
-                    throw new Error(data.error || 'Server error creating booking context. Please check all fields.');
-                }
-
-                bookingId = data.booking_id;
-                console.log("Booking context created:", bookingId);
 
                 // Validate service and city
                 if (!service) {
@@ -1427,21 +1415,24 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Confirming...';
 
             try {
-                if (!bookingId) {
-                    throw new Error('Booking session expired or failed to initialize. Please go back and try again.');
-                }
+                // Ensure service inputs are up to date before final submission
+                updateServiceInputs();
+                const formData = new FormData(form);
 
-                const response = await fetch(`/api/bookings/${bookingId}/worker`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ worker_id: workerId }),
+                // Explicitly set the service field from our logical selection
+                const selectedS = JSON.parse(document.getElementById('selectedServices').value || '[]');
+                const service = selectedS.length > 0 ? selectedS[0].value : document.getElementById('selectedService').value;
+                formData.set('service', service);
+
+                // Perform the FULL booking creation here (Step 1 + Step 2 + Step 3 + Step 4 all in one)
+                const response = await fetch('/api/bookings', {
+                    method: 'POST',
+                    body: formData, // Contains worker_id, service, date, customer info, etc.
                     credentials: 'include'
                 });
 
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    throw new Error(errorData.error || 'Failed to confirm booking');
-                }
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Failed to confirm booking');
 
                 // Success View
                 document.querySelector('.booking-grid').innerHTML = `
@@ -1452,8 +1443,8 @@
                         <h2 style="font-size: 2rem; color: var(--primary-dark); margin-bottom: 10px;">Booking Confirmed!</h2>
                         <p style="color: var(--text-light); margin-bottom: 40px;">Your professional has been assigned and will arrive at the scheduled time.</p>
                         <div style="display: flex; gap: 15px; justify-content: center;">
-                            <a href="home.html" class="btn btn-prev">Go Dashboard</a>
-                            <a href="bookings.php" class="btn btn-next">View My Bookings</a>
+                            <a href="home.html" class="btn btn-prev" style="text-decoration: none;">Go Dashboard</a>
+                            <a href="bookings.html" class="btn btn-next" style="text-decoration: none;">View My Bookings</a>
                         </div>
                     </div>
                 `;

@@ -13,7 +13,7 @@ router.post('/', uploadImage.single('image'), async (req, res) => {
     try {
         const {
             full_name, phone, email, address, city, service,
-            date, problem_description, tools_required, payment
+            date, problem_description, tools_required, payment, worker_id
         } = req.body;
 
         // Validate required fields
@@ -48,6 +48,7 @@ router.post('/', uploadImage.single('image'), async (req, res) => {
         // Create booking
         const booking = new Booking({
             customer_id: customer._id,
+            worker_id: worker_id || null, // Optional at creation
             service_type: service,
             preferred_date: new Date(date),
             problem_description: problem_description || '',
@@ -157,6 +158,29 @@ router.put('/:id/status', async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Server error updating status'
+        });
+    }
+});
+
+// @route   GET /api/bookings
+// @desc    Get all bookings (Admin/Public for now)
+// @access  Public (Should be Admin)
+router.get('/', async (req, res) => {
+    try {
+        const bookings = await Booking.find()
+            .populate('customer_id')
+            .populate('worker_id')
+            .sort({ created_at: -1 });
+
+        res.json({
+            success: true,
+            bookings
+        });
+    } catch (error) {
+        console.error('Get all bookings error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Server error fetching bookings'
         });
     }
 });

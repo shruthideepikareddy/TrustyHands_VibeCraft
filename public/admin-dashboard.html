@@ -447,6 +447,7 @@
         </div>
         <ul class="nav-links">
             <li class="active"><i class="fas fa-users"></i> Worker Approvals</li>
+            <li><i class="fas fa-calendar-check"></i> Bookings</li>
             <li><i class="fas fa-chart-line"></i> Market Insights</li>
             <li><i class="fas fa-shield-alt"></i> Complaints</li>
             <li><i class="fas fa-cog"></i> Platform Settings</li>
@@ -546,6 +547,59 @@
                 <div id="emptyState" class="empty-state" style="display: none;">
                     <i class="fas fa-clipboard-list"></i>
                     <p>No pending applications at the moment.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: Bookings -->
+        <div id="view-bookings" class="dashboard-view" style="display: none;">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon warning">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Pending</h3>
+                        <p id="pendingBookingsCount">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Confirmed</h3>
+                        <p id="confirmedBookingsCount">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card recent-activity">
+                <div class="table-header">
+                    <h2>All Bookings</h2>
+                    <button class="btn-action" onclick="fetchBookings()" style="background: #eee;"><i
+                            class="fas fa-sync"></i> Refresh</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Service</th>
+                                <th>Customer</th>
+                                <th>Address</th>
+                                <th>Date</th>
+                                <th>Worker</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTableBody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="emptyBookingsState" class="empty-state" style="display: none;">
+                    <i class="fas fa-calendar-alt"></i>
+                    <p>No bookings found.</p>
                 </div>
             </div>
         </div>
@@ -816,6 +870,10 @@
                 } else if (text === 'Market Insights') {
                     document.getElementById('view-market').style.display = 'block';
                     titleEl.textContent = 'Market Overview';
+                } else if (text === 'Bookings') {
+                    document.getElementById('view-bookings').style.display = 'block';
+                    titleEl.textContent = 'Booking Management';
+                    fetchBookings();
                 } else if (text === 'Complaints') {
                     document.getElementById('view-complaints').style.display = 'block';
                     titleEl.textContent = 'User Complaints';
@@ -825,6 +883,62 @@
                 }
             });
         });
+
+        // Fetch Bookings Logic
+        async function fetchBookings() {
+            try {
+                const response = await fetch('/api/bookings');
+                const data = await response.json();
+
+                if (data.success) {
+                    const tbody = document.getElementById('bookingsTableBody');
+                    tbody.innerHTML = '';
+
+                    let pending = 0;
+                    let confirmed = 0;
+
+                    data.bookings.forEach(b => {
+                        if (b.status === 'Pending') pending++;
+                        else if (b.status === 'Confirmed' || b.status === 'Completed') confirmed++;
+
+                        const row = `
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="user-info">
+                                            <h4>${b.service_type}</h4>
+                                            <p>${b.payment_mode}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    ${b.customer_id ? `
+                                        <div>${b.customer_id.full_name}</div>
+                                        <small>${b.customer_id.phone_number}</small>
+                                    ` : 'N/A'}
+                                </td>
+                                <td>${b.customer_id ? b.customer_id.address : 'N/A'}</td>
+                                <td>${new Date(b.preferred_date).toLocaleDateString()}</td>
+                                <td>
+                                    ${b.worker_id ? `
+                                        <span class="status-badge approved">${b.worker_id.full_name}</span>
+                                    ` : '<span class="status-badge pending">Unassigned</span>'}
+                                </td>
+                                <td>
+                                    <span class="status-badge ${b.status === 'Confirmed' ? 'approved' : 'pending'}">${b.status}</span>
+                                </td>
+                            </tr>
+                        `;
+                        tbody.innerHTML += row;
+                    });
+
+                    document.getElementById('pendingBookingsCount').innerText = pending;
+                    document.getElementById('confirmedBookingsCount').innerText = confirmed;
+                }
+            } catch (error) {
+                console.error('Error fetching bookings:', error);
+            }
+        }
     </script>
 </body>
 
