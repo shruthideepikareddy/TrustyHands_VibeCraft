@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Resources | TrustyHands</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --dark-moss-green: #606c38;
+            --pakistan-green: #283618;
+            --cornsilk: #fefae0;
+            --earth-yellow: #dda15e;
+            --tigers-eye: #bc6c25;
+
+            --primary: var(--dark-moss-green);
+            --secondary: var(--earth-yellow);
+            --accent: var(--tigers-eye);
+            --light-background: var(--cornsilk);
+            --dark-background: var(--pakistan-green);
+            --white: #ffffff;
+            --light-gray: #f8f9f8;
+            --text: #333;
+            --text-light: #666;
+            --text-footer: #ddd;
+            --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--white);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            font-size: 14px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+            text-decoration: none;
+        }
+
+        .logo i {
+            color: var(--accent);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 20px;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+            background: rgba(96, 108, 56, 0.1);
+        }
+
+        nav a.active {
+            color: var(--primary);
+            background: rgba(96, 108, 56, 0.1);
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 13px;
+            letter-spacing: 0.2px;
+            text-decoration: none !important;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #728c45);
+            color: var(--white);
+            box-shadow: 0 3px 10px rgba(96, 108, 56, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--pakistan-green), var(--dark-moss-green));
+            padding: 80px 0;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 60px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 50px;
+            color: var(--primary);
+            position: relative;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 70px;
+            height: 3px;
+            background: var(--accent);
+            margin: 15px auto 0;
+            border-radius: 3px;
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .resource-card {
+            background: var(--white);
+            padding: 40px 30px;
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .resource-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+        }
+
+        .resource-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 25px;
+            background: rgba(96, 108, 56, 0.08);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .resource-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--pakistan-green);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .resource-card p {
+            color: var(--text-light);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: var(--dark-background);
+            padding: 40px 0 15px;
+            position: relative;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 18px;
+            color: var(--earth-yellow);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column a {
+            color: var(--text-footer);
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .footer-column a:hover {
+            color: var(--earth-yellow);
+            padding-left: 3px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: rgba(221, 161, 94, 0.15);
+            border-radius: 50%;
+            transition: var(--transition);
+            font-size: 1rem;
+            color: var(--earth-yellow);
+        }
+
+        .social-icons a:hover {
+            background-color: var(--earth-yellow);
+            color: var(--dark-background);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-footer);
+            position: relative;
+            z-index: 1;
+            font-size: 0.9rem;
+        }
+
+        /* Profile Styles */
+        .user-profile-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--earth-yellow), var(--tigers-eye));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 220px;
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .profile-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .profile-dropdown ul {
+            list-style: none;
+            padding: 10px 0;
+        }
+
+        .profile-dropdown ul li {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+
+        .profile-dropdown ul li:hover {
+            background: rgba(96, 108, 56, 0.05);
+        }
+
+        .profile-dropdown ul li a {
+            color: inherit;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        #authLinks,
+        #userProfile {
+            display: none;
+        }
+    </style>
+    <script>
+        // Anti-flicker logic: Apply predictive UI state immediately
+        (function () {
+            const loggedIn = localStorage.getItem('th_logged_in') === 'true';
+            document.write('<style>#authLinks { display: ' + (loggedIn ? 'none' : 'flex') + ' !important; } #userProfile { display: ' + (loggedIn ? 'flex' : 'none') + ' !important; }</style>');
+        })();
+    </script>
+</head>
+
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="home.html" class="logo">
+                <i class="fas fa-hands-helping"></i>
+                <span>Trustyhands</span>
+            </a>
+            <nav id="mainNav">
+                <ul>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="how-it-works.html">How it Works</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </nav>
+            <!-- Logged Out State -->
+            <div id="authLinks" style="gap: 10px;">
+                <a href="login.html" class="btn btn-outline">Log In</a>
+                <a href="login.html#signup" class="btn btn-primary">Sign Up</a>
+            </div>
+            <div class="user-profile-container" id="userProfile" style="display: none;">
+                <div class="profile-circle" id="profileToggle">
+                    <span id="userInitials">U</span>
+                </div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="user-info"
+                        style="padding: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; align-items: center; gap: 12px;">
+                        <div class="info-initials"
+                            style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--earth-yellow), var(--tigers-eye)); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600;"
+                            id="dropdownInitials">U</div>
+                        <div class="info-text">
+                            <div class="name" id="userName"
+                                style="font-weight: 600; color: var(--text); font-size: 0.95rem;">User Name</div>
+                            <div class="email" id="userEmail" style="font-size: 0.8rem; color: var(--text-light);">
+                                user@example.com</div>
+                        </div>
+                    </div>
+                    <ul>
+                        <li><a href="profile.html"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
+                        <li><a href="bookings.html"><i class="fas fa-calendar-check"></i> My Bookings</a></li>
+                        <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Worker Resources</h1>
+            <p>Empowering you with the tools and information you need to grow your business and provide exceptional
+                service.</p>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-title">Growth & Success Tools</h2>
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fas fa-rocket"></i></div>
+                    <h3>Getting Started</h3>
+                    <p>New to TrustyHands? Learn how to set up your profile, list your skills, and start receiving
+                        booking requests in no time.</p>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fas fa-money-check-alt"></i></div>
+                    <h3>Payments & Earnings</h3>
+                    <p>Track your earnings, understand our commission structure, and manage your payout settings. We
+                        ensure timely payments for every completed job.</p>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fas fa-certificate"></i></div>
+                    <h3>Training & Skills</h3>
+                    <p>Access exclusive resources to sharpen your skills, learn best practices for customer service, and
+                        get certified in new service categories.</p>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Boosting Your Profile</h3>
+                    <p>Learn tips for getting 5-star reviews, using photos effectively, and optimizing your profile to
+                        appear higher in customer searches.</p>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fas fa-tools"></i></div>
+                    <h3>Service Standards</h3>
+                    <p>Review our quality benchmarks and service protocols to ensure you're always delivering the
+                        premium experience TrustyHands customers expect.</p>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fas fa-headset"></i></div>
+                    <h3>Dedicated Support</h3>
+                    <p>Have a question or stuck during a job? Our worker-only support line is available 24/7 to help you
+                        resolve issues on the go.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <div class="logo" style="margin-bottom: 15px; font-size: 20px; color: var(--earth-yellow);">
+                        <i class="fas fa-hands-helping"></i>
+                        <span>Trustyhands</span>
+                    </div>
+                    <p style="font-size: 0.9rem; max-width: 300px; margin-bottom: 18px; color: var(--text-footer);">
+                        Connecting customers with trusted local workers for any task, anytime, anywhere.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="home.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="how-it-works.html">How it Works</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="help.html">Help Center</a></li>
+                        <li><a href="safety.html">Safety Guidelines</a></li>
+                        <li><a href="worker-resources.html">Worker Resources</a></li>
+                        <li><a href="customer-resources.html">Customer Resources</a></li>
+                        <li><a href="community.html">Community</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Trustyhands. All rights reserved. Premium Service Platform</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth-check.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Auth Check
+            const user = await checkAuth(false);
+            if (user) {
+                const profileContainer = document.getElementById('userProfile');
+                const authLinks = document.getElementById('authLinks');
+
+                if (profileContainer) profileContainer.style.display = 'flex';
+                if (authLinks) authLinks.style.display = 'none';
+
+                // Populate profile
+                const initials = (user.firstName.charAt(0) + (user.lastName ? user.lastName.charAt(0) : '')).toUpperCase() || 'U';
+
+                const els = {
+                    userInitials: document.getElementById('userInitials'),
+                    dropdownInitials: document.getElementById('dropdownInitials'),
+                    userName: document.getElementById('userName'),
+                    userEmail: document.getElementById('userEmail')
+                };
+
+                if (els.userInitials) els.userInitials.textContent = initials;
+                if (els.dropdownInitials) els.dropdownInitials.textContent = initials;
+                if (els.userName) els.userName.textContent = user.firstName + (user.lastName ? ' ' + user.lastName : '');
+                if (els.userEmail) els.userEmail.textContent = user.email;
+
+                // Apply avatar immediately if available to prevent flicker
+                if (user.profileImage && typeof applyHeaderAvatar === 'function') {
+                    applyHeaderAvatar(user.profileImage, user.firstName);
+                }
+            } else {
+                const profileContainer = document.getElementById('userProfile');
+                const authLinks = document.getElementById('authLinks');
+
+                if (profileContainer) profileContainer.style.display = 'none';
+                if (authLinks) authLinks.style.display = 'flex';
+            }
+
+            // Profile Dropdown
+            const profileToggle = document.getElementById('profileToggle');
+            const profileDropdown = document.getElementById('profileDropdown');
+            if (profileToggle && profileDropdown) {
+                profileToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    profileDropdown.classList.toggle('active');
+                });
+                document.addEventListener('click', () => profileDropdown.classList.remove('active'));
+            }
+
+            // Logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    await fetch('/api/auth/logout', { method: 'POST' });
+                    window.location.href = 'index.html';
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

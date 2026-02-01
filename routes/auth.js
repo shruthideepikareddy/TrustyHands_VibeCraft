@@ -49,6 +49,7 @@ router.post('/register', [
         req.session.user_id = user._id;
         req.session.firstName = user.firstName;
         req.session.email = user.email;
+        req.session.profileImage = user.profileImage;
 
         res.status(201).json({
             success: true,
@@ -109,6 +110,7 @@ router.post('/login', [
         req.session.user_id = user._id;
         req.session.firstName = user.firstName;
         req.session.email = user.email;
+        req.session.profileImage = user.profileImage;
 
         res.json({
             success: true,
@@ -157,7 +159,8 @@ router.get('/session', (req, res) => {
             user: {
                 id: req.session.user_id,
                 firstName: req.session.firstName,
-                email: req.session.email
+                email: req.session.email,
+                profileImage: req.session.profileImage || null
             }
         });
     } else {

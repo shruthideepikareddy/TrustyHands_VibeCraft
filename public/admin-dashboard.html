@@ -160,8 +160,7 @@
             opacity: 0.7;
         }
 
-        .nav-links li:hover,
-        .nav-links li.active {
+        .nav-links li:hover {
             background: rgba(255, 255, 255, 0.1);
             opacity: 1;
         }
@@ -169,6 +168,75 @@
         .nav-links li.active {
             border-left: 4px solid var(--secondary);
             background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Profile Dropdown Styles (Unified) */
+        .user-profile-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-left: 20px;
+        }
+
+        .profile-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 250px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+        }
+
+        .profile-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .profile-dropdown .user-info {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-dropdown a {
+            text-decoration: none;
+            color: var(--text-main);
+            display: block;
+            padding: 12px 20px;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-dropdown a:hover {
+            background: var(--bg-light);
+            color: var(--primary);
         }
 
         /* Main Content */
@@ -366,7 +434,7 @@
                 <button type="submit" class="btn-login">Unlock Dashboard</button>
             </form>
             <div id="loginError" style="color: #e74c3c; font-size: 0.85rem; margin-top: 15px; display: none;">
-                Invalid credentials. Please contact IT support.
+                Invalid credentials. Please use admin@trustyhands.com / admin123
             </div>
         </div>
     </div>
@@ -390,66 +458,173 @@
 
     <main id="dashboardMain">
         <div class="header-actions">
-            <h1>Worker Verification Hub</h1>
-            <div
-                style="background: var(--white); padding: 10px 20px; border-radius: 12px; box-shadow: var(--shadow); font-weight: 600;">
-                <i class="fas fa-calendar"></i> <span id="currentDate">Jan 31, 2026</span>
-            </div>
-        </div>
+            <h1 id="pageTitle">Worker Verification Hub</h1>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div
+                    style="background: var(--white); padding: 10px 20px; border-radius: 12px; box-shadow: var(--shadow); font-weight: 600;">
+                    <i class="fas fa-calendar"></i> <span id="currentDate">Jan 31, 2026</span>
+                </div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #eafaf1; color: #27ae60;"><i class="fas fa-clock"></i></div>
-                <div class="stat-info">
-                    <h3 id="pendingCount">0</h3>
-                    <p>Pending Review</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #fdf2f2; color: #ef4444;"><i class="fas fa-user-check"></i>
-                </div>
-                <div class="stat-info">
-                    <h3 id="approvedCount">0</h3>
-                    <p>Total Professionals</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #fff8e1; color: #f39c12;"><i class="fas fa-star"></i></div>
-                <div class="stat-info">
-                    <h3>4.9</h3>
-                    <p>Network Rating</p>
+                <!-- Profile Container -->
+                <div class="user-profile-container" id="userProfile">
+                    <div class="profile-circle" id="profileToggle">
+                        <span id="userInitials">A</span>
+                    </div>
+
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <div class="user-info">
+                            <div class="profile-circle" id="dropdownInitials"
+                                style="width: 32px; height: 32px; font-size: 0.8rem;">A</div>
+                            <div style="flex: 1; overflow: hidden;">
+                                <div id="userName" style="font-weight: 700; font-size: 0.9rem;">Admin User</div>
+                                <div id="userEmail" style="font-size: 0.75rem; color: var(--text-light);">
+                                    admin@trustyhands.com</div>
+                            </div>
+                        </div>
+                        <a href="#" onclick="logout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="section-card">
-            <div class="table-header">
-                <h2>Pending Applications</h2>
-                <button onclick="refreshData()" class="btn-action" style="background: #eee;"><i class="fas fa-sync"></i>
-                    Refresh List</button>
+        <!-- VIEW: Worker Approvals -->
+        <div id="view-approvals" class="dashboard-view">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #eafaf1; color: #27ae60;"><i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="pendingCount">0</h3>
+                        <p>Pending Review</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #fdf2f2; color: #ef4444;"><i
+                            class="fas fa-user-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="approvedCount">0</h3>
+                        <p>Total Professionals</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #fff8e1; color: #f39c12;"><i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>4.9</h3>
+                        <p>Network Rating</p>
+                    </div>
+                </div>
             </div>
 
-            <div id="tableWrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Worker Profile</th>
-                            <th>Specialization</th>
-                            <th>Exp.</th>
-                            <th>City</th>
-                            <th>Rate</th>
-                            <th>Identity</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="workerTableBody">
-                        <!-- Content injected by JS -->
-                    </tbody>
-                </table>
+            <div class="section-card">
+                <div class="table-header">
+                    <h2>Pending Applications</h2>
+                    <button onclick="refreshData()" class="btn-action" style="background: #eee;"><i
+                            class="fas fa-sync"></i>
+                        Refresh List</button>
+                </div>
+
+                <div id="tableWrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Worker Profile</th>
+                                <th>Specialization</th>
+                                <th>Exp.</th>
+                                <th>City</th>
+                                <th>Rate</th>
+                                <th>Identity</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="workerTableBody">
+                            <!-- Content injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <i class="fas fa-clipboard-list"></i>
+                    <p>No pending applications at the moment.</p>
+                </div>
             </div>
-            <div id="emptyState" class="empty-state" style="display: none;">
-                <i class="fas fa-clipboard-list"></i>
-                <p>No pending applications at the moment.</p>
+        </div>
+
+        <!-- VIEW: Market Insights -->
+        <div id="view-market" class="dashboard-view" style="display: none;">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #e3f2fd; color: #2196f3;"><i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>₹45,200</h3>
+                        <p>Total Revenue (Jan)</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #f3e5f5; color: #9c27b0;"><i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>342</h3>
+                        <p>Active Customers</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #e0f2f1; color: #009688;"><i
+                            class="fas fa-percentage"></i></div>
+                    <div class="stat-info">
+                        <h3>12%</h3>
+                        <p>Growth Rate</p>
+                    </div>
+                </div>
+            </div>
+            <div class="section-card" style="padding: 40px; text-align: center;">
+                <i class="fas fa-chart-pie" style="font-size: 4rem; color: #eee; margin-bottom: 20px;"></i>
+                <h3 style="color: var(--text-light);">Detailed analytics charts are generating...</h3>
+            </div>
+        </div>
+
+        <!-- VIEW: Complaints -->
+        <div id="view-complaints" class="dashboard-view" style="display: none;">
+            <div class="section-card">
+                <div class="table-header">
+                    <h2>User Complaints</h2>
+                    <span class="status-badge status-approved">All Resolved</span>
+                </div>
+                <div class="empty-state">
+                    <i class="fas fa-smile-beam"></i>
+                    <p>No active complaints! Your platform is running smoothly.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: Settings -->
+        <div id="view-settings" class="dashboard-view" style="display: none;">
+            <div class="section-card" style="max-width: 600px;">
+                <h2 style="margin-bottom: 25px;">Platform Configuration</h2>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="display:block; margin-bottom:8px; font-weight:600;">Platform Name</label>
+                    <input type="text" value="TrustyHands Services"
+                        style="width:100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="display:block; margin-bottom:8px; font-weight:600;">Admin Email</label>
+                    <input type="email" value="admin@trustyhands.com"
+                        style="width:100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;" disabled>
+                </div>
+                <div
+                    style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
+                    <div>
+                        <strong style="display:block;">Maintenance Mode</strong>
+                        <small style="color: #666;">Suspend all new user registrations</small>
+                    </div>
+                    <div style="position: relative; width: 50px; height: 26px; background: #ccc; border-radius: 20px;">
+                        <div
+                            style="position: absolute; left: 2px; top: 2px; width: 22px; height: 22px; background: white; border-radius: 50%;">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-login" style="width: auto; padding: 10px 30px;">Save Changes</button>
             </div>
         </div>
     </main>
@@ -472,6 +647,28 @@
                 setTimeout(() => { document.getElementById('loginError').style.display = 'none'; }, 3000);
             }
         };
+
+        // Profile Dropdown Logic
+        const profileToggle = document.getElementById('profileToggle');
+        const profileDropdown = document.getElementById('profileDropdown');
+
+        if (profileToggle && profileDropdown) {
+            profileToggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('active');
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!profileDropdown.contains(e.target) && !profileToggle.contains(e.target)) {
+                    profileDropdown.classList.remove('active');
+                }
+            });
+        }
+
+        async function logout() {
+            sessionStorage.removeItem('adminLoggedIn');
+            window.location.reload();
+        }
 
         function unlockDashboard() {
             document.getElementById('loginGate').style.opacity = '0';
@@ -581,6 +778,96 @@
         setInterval(() => {
             if (sessionStorage.getItem('adminLoggedIn') === 'true') refreshData();
         }, 5000);
+
+        // --- Sidebar Logic ---
+        document.querySelectorAll('.nav-links li').forEach(item => {
+            item.addEventListener('click', function () {
+                // visual active state
+                document.querySelectorAll('.nav-links li').forEach(li => li.classList.remove('active'));
+                this.classList.add('active');
+
+                // Hide all views
+                document.querySelectorAll('.dashboard-view').forEach(view => view.style.display = 'none');
+
+                // Navigation Logic
+                const text = this.innerText.trim();
+                const titleEl = document.getElementById('pageTitle');
+
+                if (text === 'Worker Approvals') {
+                    document.getElementById('view-approvals').style.display = 'block';
+                    titleEl.textContent = 'Worker Verification Hub';
+                } else if (text === 'Market Insights') {
+                    document.getElementById('view-market').style.display = 'block';
+                    titleEl.textContent = 'Market Overview';
+                } else if (text === 'Complaints') {
+                    document.getElementById('view-complaints').style.display = 'block';
+                    titleEl.textContent = 'User Complaints';
+                } else if (text === 'Platform Settings') {
+                    document.getElementById('view-settings').style.display = 'block';
+                    titleEl.textContent = 'Platform Settings';
+                }
+            });
+        });
+
+        // --- Dev Tools: Seed Data ---
+        function seedData() {
+            const mock = [
+                {
+                    id: 'dev-' + Date.now(),
+                    name: 'Rohan Sharma',
+                    email: 'rohan.s@example.com',
+                    service: 'Plumbing Services',
+                    exp: '5-10 Years (Expert)',
+                    city: 'Mumbai',
+                    locality: 'Andheri West',
+                    pincode: '400053',
+                    rate: '450',
+                    photo: 'https://randomuser.me/api/portraits/men/32.jpg',
+                    status: 'pending'
+                },
+                {
+                    id: 'dev-' + (Date.now() + 1),
+                    name: 'Priya Patel',
+                    email: 'priya.p@example.com',
+                    service: 'Deep Cleaning',
+                    exp: '2-5 Years (Professional)',
+                    city: 'Ahmedabad',
+                    locality: 'Navrangpura',
+                    pincode: '380009',
+                    rate: '300',
+                    photo: 'https://randomuser.me/api/portraits/women/44.jpg',
+                    status: 'pending'
+                }
+            ];
+
+            let current = JSON.parse(localStorage.getItem('pendingWorkers') || '[]');
+            // Avoid dupes if already seeded
+            if (current.length === 0) {
+                localStorage.setItem('pendingWorkers', JSON.stringify(mock));
+                refreshData();
+                alert('Test data generated! You should see 2 applications now.');
+            } else {
+                if (confirm('You already have pending applications. Add mock data anyway?')) {
+                    localStorage.setItem('pendingWorkers', JSON.stringify([...current, ...mock]));
+                    refreshData();
+                }
+            }
+        }
+
+        // Add Seed Button to Header
+        const headerBtnConfig = document.querySelector('.section-card .table-header');
+        if (headerBtnConfig) {
+            const seedBtn = document.createElement('button');
+            seedBtn.className = 'btn-action';
+            seedBtn.style.background = '#e0f7fa';
+            seedBtn.style.color = '#006064';
+            seedBtn.style.marginRight = '10px';
+            seedBtn.innerHTML = '<i class="fas fa-database"></i> Generate Test Data';
+            seedBtn.onclick = seedData;
+
+            // Insert before Refresh button
+            headerBtnConfig.insertBefore(seedBtn, headerBtnConfig.lastElementChild);
+        }
     </script>
 </body>
 

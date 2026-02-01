@@ -11,8 +11,12 @@
         :root {
             --primary: #606c38;
             --primary-dark: #283618;
+            --primary: #606c38;
+            --primary-dark: #283618;
             --secondary: #dda15e;
             --accent: #bc6c25;
+            --tigers-eye: #bc6c25;
+            --earth-yellow: #dda15e;
             --bg-light: #fefae0;
             --white: #ffffff;
             --text-main: #2c3e50;
@@ -430,6 +434,77 @@
                 grid-template-columns: 1fr;
             }
         }
+
+
+
+        /* Profile Dropdown Styles (Ported from Home) */
+        .user-profile-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-left: 20px;
+        }
+
+        .profile-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 250px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+        }
+
+        .profile-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .profile-dropdown .user-info {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-dropdown a {
+            text-decoration: none;
+            color: var(--text-main);
+            display: block;
+            padding: 12px 20px;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-dropdown a:hover {
+            background: var(--bg-light);
+            color: var(--primary);
+        }
     </style>
 </head>
 
@@ -440,9 +515,36 @@
                 <i class="fas fa-hands-helping"></i>
                 <span>TrustyHands</span>
             </a>
-            <a href="home.html" class="back-home" id="universalHome">
-                <i class="fas fa-arrow-left"></i> Back to Homepage
-            </a>
+            <div style="display: flex; align-items: center;">
+                <a href="home.html" class="back-home" id="universalHome">
+                    <i class="fas fa-arrow-left"></i> Back to Homepage
+                </a>
+
+                <!-- Profile Container -->
+                <div class="user-profile-container" id="userProfile" style="display: none;">
+                    <div class="profile-circle" id="profileToggle">
+                        <span id="userInitials">U</span>
+                    </div>
+
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <div class="user-info">
+                            <div class="profile-circle" id="dropdownInitials"
+                                style="width: 32px; height: 32px; font-size: 0.8rem;">U</div>
+                            <div style="flex: 1; overflow: hidden;">
+                                <div id="userName"
+                                    style="font-weight: 700; font-size: 0.9rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+                                    User</div>
+                                <div id="userEmail"
+                                    style="font-size: 0.75rem; color: var(--text-light); white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+                                    email@example.com</div>
+                            </div>
+                        </div>
+                        <a href="profile.html"><i class="fas fa-user"></i> My Profile</a>
+                        <a href="bookings.html"><i class="fas fa-history"></i> My Bookings</a>
+                        <a href="#" onclick="logout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -621,85 +723,53 @@
                 </form>
             </div>
         </div>
+    </div>
 
-        <!-- Flow Segment: Pending Review -->
-        <div id="pendingReview" style="display: none;">
-            <div class="status-hero">
-                <i class="fas fa-hourglass-half status-icon"></i>
-                <h1 style="font-size: 2.5rem; margin-bottom: 10px;">Verification in Progress</h1>
-                <p style="color: var(--text-light); max-width: 600px; margin: 0 auto;">Thanks for applying, <span
-                        id="pName" style="color: var(--primary); font-weight:700;">Worker</span>! We are currently
-                    checking your credentials against local standards. We'll notify you once you're approved!</p>
-
-                <div class="progress-box">
-                    <div class="progress-line done">
-                        <div class="p-dot"></div>
-                        <div>
-                            <strong style="display:block">Submission Complete</strong>
-                            <small style="color: #888">Step 1 finished on Jan 31st</small>
-                        </div>
-                    </div>
-                    <div class="progress-line active">
-                        <div class="p-dot"></div>
-                        <div>
-                            <strong style="display:block">Background Check</strong>
-                            <small style="color: #888">Verifying identity and criminal records...</small>
-                        </div>
-                    </div>
-                    <div class="progress-line">
-                        <div class="p-dot"></div>
-                        <div><strong>Final Approval</strong></div>
-                    </div>
+    <!-- Flow Segment: Expert Dashboard -->
+    <div id="expertPortal" style="display: none;">
+        <div style="margin-bottom: 30px; display:flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1 style="font-size: 2rem; color: var(--primary-dark);">Welcome back, <span id="dName">Expert</span>!
+                </h1>
+                <p style="color: var(--text-light);">You have 3 new deals in your area today.</p>
+            </div>
+            <div style="text-align: right;">
+                <div
+                    style="background: #eafaf1; color: #27ae60; padding: 5px 15px; border-radius: 20px; font-weight: 700; display: inline-block;">
+                    <i class="fas fa-circle" style="font-size: 0.6rem; vertical-align: middle;"></i> Verified
+                    Professional
                 </div>
             </div>
         </div>
 
-        <!-- Flow Segment: Expert Dashboard -->
-        <div id="expertPortal" style="display: none;">
-            <div style="margin-bottom: 30px; display:flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h1 style="font-size: 2rem; color: var(--primary-dark);">Welcome back, <span
-                            id="dName">Expert</span>!
-                    </h1>
-                    <p style="color: var(--text-light);">You have 3 new deals in your area today.</p>
-                </div>
-                <div style="text-align: right;">
-                    <div
-                        style="background: #eafaf1; color: #27ae60; padding: 5px 15px; border-radius: 20px; font-weight: 700; display: inline-block;">
-                        <i class="fas fa-circle" style="font-size: 0.6rem; vertical-align: middle;"></i> Verified
-                        Professional
+        <div class="dashboard-layout">
+            <aside class="sidebar-card">
+                <img src="" id="dImg" class="profile-img" alt="Profile">
+                <h2 style="text-align: center; margin-bottom: 5px;" id="dFullName">John Doe</h2>
+                <p style="text-align: center; color: var(--text-light); font-weight: 600;" id="dService">Plumbing
+                    Expert</p>
+
+                <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                        <span style="color: #888">Rating</span>
+                        <strong>4.9 <i class="fas fa-star" style="color: #f1c40f"></i></strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                        <span style="color: #888">Jobs Done</span>
+                        <strong>0</strong>
                     </div>
                 </div>
-            </div>
+            </aside>
 
-            <div class="dashboard-layout">
-                <aside class="sidebar-card">
-                    <img src="" id="dImg" class="profile-img" alt="Profile">
-                    <h2 style="text-align: center; margin-bottom: 5px;" id="dFullName">John Doe</h2>
-                    <p style="text-align: center; color: var(--text-light); font-weight: 600;" id="dService">Plumbing
-                        Expert</p>
-
-                    <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                            <span style="color: #888">Rating</span>
-                            <strong>4.9 <i class="fas fa-star" style="color: #f1c40f"></i></strong>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                            <span style="color: #888">Jobs Done</span>
-                            <strong>0</strong>
-                        </div>
-                    </div>
-                </aside>
-
-                <main>
-                    <h3 style="margin-bottom: 20px;"><i class="fas fa-bolt" style="color: var(--accent)"></i> Live Jobs
-                        Ready to Accept</h3>
-                    <div id="jobList">
-                        <!-- Job cards loaded here -->
-                    </div>
-                </main>
-            </div>
+            <main>
+                <h3 style="margin-bottom: 20px;"><i class="fas fa-bolt" style="color: var(--accent)"></i> Live Jobs
+                    Ready to Accept</h3>
+                <div id="jobList">
+                    <!-- Job cards loaded here -->
+                </div>
+            </main>
         </div>
+    </div>
     </div>
 
     <!-- Status Polling Feedback (Admin view will approve) -->
@@ -1013,6 +1083,61 @@
             `;
             alert(`✅ Success: Your details have been sent to ${user}. They will contact you shortly!`);
         };
+    </script>
+
+    <!-- Auth & Profile Scripts -->
+    <script src="/js/api.js"></script>
+    <script src="/js/auth-check.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check auth (public page, don't redirect)
+            const user = await checkAuth(false);
+
+            if (user) {
+                const profileContainer = document.getElementById('userProfile');
+                if (profileContainer) profileContainer.style.display = 'flex';
+
+                // Populate profile
+                const initials = (user.firstName.charAt(0) + (user.lastName ? user.lastName.charAt(0) : '')).toUpperCase() || 'U';
+
+                const els = {
+                    userInitials: document.getElementById('userInitials'),
+                    dropdownInitials: document.getElementById('dropdownInitials'),
+                    userName: document.getElementById('userName'),
+                    userEmail: document.getElementById('userEmail')
+                };
+
+                if (els.userInitials) els.userInitials.textContent = initials;
+                if (els.dropdownInitials) els.dropdownInitials.textContent = initials;
+                if (els.userName) els.userName.textContent = user.firstName + (user.lastName ? ' ' + user.lastName : '');
+                if (els.userEmail) els.userEmail.textContent = user.email;
+
+                // Pre-fill form if user data available
+                if (document.getElementById('fName') && !document.getElementById('fName').value)
+                    document.getElementById('fName').value = user.firstName + ' ' + (user.lastName || '');
+
+                if (document.getElementById('fEmail') && !document.getElementById('fEmail').value)
+                    document.getElementById('fEmail').value = user.email;
+
+            }
+        });
+
+        // Profile Dropdown Toggle
+        const profileToggle = document.getElementById('profileToggle');
+        const profileDropdown = document.getElementById('profileDropdown');
+
+        if (profileToggle && profileDropdown) {
+            profileToggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('active');
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!profileDropdown.contains(e.target) && !profileToggle.contains(e.target)) {
+                    profileDropdown.classList.remove('active');
+                }
+            });
+        }
     </script>
 </body>
 

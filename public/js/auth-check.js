@@ -1,5 +1,17 @@
 // Authentication check for protected pages
 async function checkAuth(redirectToLogin = true) {
+    // Admin Session Override
+    if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+        return {
+            id: 'admin',
+            firstName: 'Admin',
+            lastName: 'User',
+            email: 'admin@trustyhands.com',
+            profileImage: null,
+            isAdmin: true
+        };
+    }
+
     try {
         const response = await fetch('/api/auth/session', {
             credentials: 'include'
@@ -7,11 +19,14 @@ async function checkAuth(redirectToLogin = true) {
         const data = await response.json();
 
         if (data.authenticated) {
+            localStorage.setItem('th_logged_in', 'true');
             return data.user;
         } else if (redirectToLogin) {
+            localStorage.removeItem('th_logged_in');
             window.location.href = '/login.html';
             return null;
         }
+        localStorage.removeItem('th_logged_in');
         return null;
     } catch (error) {
         console.error('Auth check error:', error);
@@ -24,6 +39,10 @@ async function checkAuth(redirectToLogin = true) {
 
 // Logout function
 async function logout() {
+    sessionStorage.removeItem('adminLoggedIn'); // Clear admin flag
+    sessionStorage.removeItem('th_avatar_url'); // Clear cache
+    localStorage.removeItem('th_logged_in'); // Clear predictive flag
+
     try {
         await fetch('/api/auth/logout', {
             method: 'POST',
@@ -58,40 +77,53 @@ function updateUserDisplay(user) {
 }
 
 // Helper: apply avatar image to header elements if they exist
+// Helper: apply avatar image to header elements if they exist
 function applyHeaderAvatar(avatarUrl, firstName = '') {
     const profileCircle = document.getElementById('profileToggle');
     const userInitials = document.getElementById('userInitials');
     const dropdownInitials = document.getElementById('dropdownInitials');
     const initials = (firstName ? firstName.charAt(0) : 'U').toUpperCase();
 
-    if (profileCircle) {
-        if (avatarUrl) {
-            profileCircle.style.backgroundImage = `url('${avatarUrl}')`;
+    const setAvatar = (url) => {
+        if (profileCircle) {
+            profileCircle.style.backgroundImage = `url('${url}')`;
             profileCircle.style.backgroundSize = 'cover';
             profileCircle.style.backgroundPosition = 'center';
-        } else {
-            profileCircle.style.backgroundImage = 'none';
         }
-    }
-
-    if (userInitials) {
-        if (avatarUrl) {
-            userInitials.textContent = '';
-        } else {
-            userInitials.textContent = initials;
-        }
-    }
-
-    if (dropdownInitials) {
-        if (avatarUrl) {
-            dropdownInitials.style.backgroundImage = `url('${avatarUrl}')`;
+        if (dropdownInitials) {
+            dropdownInitials.style.backgroundImage = `url('${url}')`;
             dropdownInitials.style.backgroundSize = 'cover';
             dropdownInitials.style.backgroundPosition = 'center';
             dropdownInitials.textContent = '';
-        } else {
-            dropdownInitials.style.backgroundImage = 'none';
+        }
+        if (userInitials) {
+            userInitials.textContent = '';
+        }
+    };
+
+    const setInitials = () => {
+        if (profileCircle) profileCircle.style.backgroundImage = ''; // Revert to CSS gradient
+        if (dropdownInitials) {
+            dropdownInitials.style.backgroundImage = '';
             dropdownInitials.textContent = initials;
         }
+        if (userInitials) userInitials.textContent = initials;
+    };
+
+    if (avatarUrl) {
+        // Try to load image first
+        const img = new Image();
+        img.onload = () => {
+            setAvatar(avatarUrl);
+        };
+        img.onerror = () => {
+            // Fallback to initials if image fails
+            console.warn('Avatar failed to load:', avatarUrl);
+            setInitials();
+        };
+        img.src = avatarUrl;
+    } else {
+        setInitials();
     }
 }
 

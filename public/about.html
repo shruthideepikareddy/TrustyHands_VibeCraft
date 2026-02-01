@@ -67,20 +67,32 @@
             justify-content: space-between;
             align-items: center;
             padding: 12px 0;
+            gap: 20px;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 22px;
+            gap: 10px;
+            font-size: 32px;
             font-weight: 700;
             color: var(--primary);
             letter-spacing: 0.5px;
+            text-decoration: none;
+            flex-shrink: 0;
+            order: 1;
         }
 
         .logo i {
+            font-size: 36px;
             color: var(--accent);
+        }
+
+        nav {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            order: 2;
         }
 
         nav ul {
@@ -126,6 +138,28 @@
         .auth-buttons {
             display: flex;
             gap: 10px;
+            align-items: center;
+            flex-shrink: 0;
+            order: 3;
+        }
+
+        .welcome-message {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            font-size: 15px;
+            font-weight: 500;
+            margin-right: 10px;
+        }
+
+        .welcome-message .welcome-text {
+            color: var(--text-light);
+        }
+
+        .welcome-message .username {
+            color: var(--primary);
+            font-weight: 600;
         }
 
         .btn {
@@ -628,6 +662,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            flex-shrink: 0;
         }
 
         .profile-circle {
@@ -736,17 +771,29 @@
             gap: 10px;
             width: 100%;
         }
+
+        #authLinks,
+        #userProfile {
+            display: none;
+        }
     </style>
+    <script>
+        // Anti-flicker logic: Apply predictive UI state immediately
+        (function () {
+            const loggedIn = localStorage.getItem('th_logged_in') === 'true';
+            document.write('<style>#authLinks { display: ' + (loggedIn ? 'none' : 'flex') + ' !important; } #userProfile { display: ' + (loggedIn ? 'flex' : 'none') + ' !important; }</style>');
+        })();
+    </script>
 </head>
 
 <body>
     <!-- Header -->
     <header>
         <div class="container header-container">
-            <div class="logo">
+            <a href="home.html" class="logo">
                 <i class="fas fa-hands-helping"></i>
                 <span>Trustyhands</span>
-            </div>
+            </a>
             <nav>
                 <ul>
                     <li><a href="home.html">Home</a></li>
@@ -761,6 +808,10 @@
                 <div class="auth-buttons">
                     <!-- Logged In State -->
                     <div class="user-profile-container" id="userProfile" style="display: none;">
+                        <div class="welcome-message">
+                            <span class="welcome-text">Welcome,</span>
+                            <span class="username" id="welcomeUserName">User</span>
+                        </div>
                         <div class="profile-circle" id="profileToggle">
                             <span id="userInitials">U</span>
                         </div>
@@ -806,7 +857,7 @@
                     </div>
 
                     <!-- Logged Out State -->
-                    <div id="authLinks" style="display: none;">
+                    <div id="authLinks" style="gap: 10px;">
                         <a href="login.html" class="btn btn-outline">Log In</a>
                         <a href="login.html#signup" class="btn btn-primary">Sign Up</a>
                     </div>
@@ -1002,21 +1053,11 @@
                 <div class="footer-column">
                     <h3>Resources</h3>
                     <ul>
-                        <li><a href="helpcenter.php">Help Center</a></li>
-                        <li><a href="safety.php">Safety Guidelines</a></li>
-                        <li><a href="worker_resources.php">Worker Resources</a></li>
-                        <li><a href="customer_resources.php">Customer Resources</a></li>
-                        <li><a href="community.php">Community</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Legal</h3>
-                    <ul>
-                        <li><a href="terms.php">Terms of Service</a></li>
-                        <li><a href="Privacy_Policy.php">Privacy Policy</a></li>
-                        <li><a href="Worker_Agreement.php">Worker Agreement</a></li>
-                        <li><a href="Cookie_Policy.php">Cookie Policy</a></li>
-                        <li><a href="GDPR.php">GDPR Compliance</a></li>
+                        <li><a href="help.html">Help Center</a></li>
+                        <li><a href="safety.html">Safety Guidelines</a></li>
+                        <li><a href="worker-resources.html">Worker Resources</a></li>
+                        <li><a href="customer-resources.html">Customer Resources</a></li>
+                        <li><a href="community.html">Community</a></li>
                     </ul>
                 </div>
             </div>
@@ -1047,13 +1088,21 @@
                     userInitials: document.getElementById('userInitials'),
                     dropdownInitials: document.getElementById('dropdownInitials'),
                     userName: document.getElementById('userName'),
-                    userEmail: document.getElementById('userEmail')
+                    userEmail: document.getElementById('userEmail'),
+                    welcomeUserName: document.getElementById('welcomeUserName')
                 };
 
                 if (els.userInitials) els.userInitials.textContent = initials;
                 if (els.dropdownInitials) els.dropdownInitials.textContent = initials;
-                if (els.userName) els.userName.textContent = user.firstName + (user.lastName ? ' ' + user.lastName : '');
+                const fullName = user.firstName + (user.lastName ? ' ' + user.lastName : '');
+                if (els.userName) els.userName.textContent = fullName;
                 if (els.userEmail) els.userEmail.textContent = user.email;
+                if (els.welcomeUserName) els.welcomeUserName.textContent = user.firstName || 'User';
+
+                // Apply avatar immediately if available to prevent flicker
+                if (user.profileImage && typeof applyHeaderAvatar === 'function') {
+                    applyHeaderAvatar(user.profileImage, user.firstName);
+                }
             } else {
                 const profileContainer = document.getElementById('userProfile');
                 const authLinks = document.getElementById('authLinks');

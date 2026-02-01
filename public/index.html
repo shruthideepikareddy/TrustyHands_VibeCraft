@@ -67,21 +67,32 @@
             justify-content: space-between;
             align-items: center;
             padding: 12px 0;
+            gap: 20px;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 22px;
+            gap: 10px;
+            font-size: 32px;
             font-weight: 700;
             color: var(--primary);
             letter-spacing: 0.5px;
             text-decoration: none;
+            flex-shrink: 0;
+            order: 1;
         }
 
         .logo i {
+            font-size: 36px;
             color: var(--accent);
+        }
+
+        nav {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            order: 2;
         }
 
         nav ul {
@@ -127,6 +138,28 @@
         .auth-buttons {
             display: flex;
             gap: 10px;
+            align-items: center;
+            flex-shrink: 0;
+            order: 3;
+        }
+
+        .welcome-message {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            font-size: 15px;
+            font-weight: 500;
+            margin-right: 10px;
+        }
+
+        .welcome-message .welcome-text {
+            color: var(--text-light);
+        }
+
+        .welcome-message .username {
+            color: var(--primary);
+            font-weight: 600;
         }
 
         .btn {
@@ -965,28 +998,28 @@
             color: var(--primary);
         }
 
-        right: 20px;
-        font-size: 28px;
-        font-weight: bold;
-        color: #aaa;
-        cursor: pointer;
-        transition: var(--transition);
-        }
-
-        .close:hover {
-            color: var(--accent);
+        #authLinks,
+        #userProfile {
+            display: none;
         }
     </style>
+    <script>
+        // Anti-flicker logic: Apply predictive UI state immediately
+        (function () {
+            const loggedIn = localStorage.getItem('th_logged_in') === 'true';
+            document.write('<style>#authLinks { display: ' + (loggedIn ? 'none' : 'flex') + ' !important; } #userProfile { display: ' + (loggedIn ? 'flex' : 'none') + ' !important; }</style>');
+        })();
+    </script>
 </head>
 
 <body>
     <!-- Header -->
     <header>
         <div class="container header-container">
-            <div class="logo">
+            <a href="home.html" class="logo">
                 <i class="fas fa-hands-helping"></i>
                 <span>Trustyhands</span>
-            </div>
+            </a>
             <nav>
                 <ul>
                     <li><a href="index.html" class="active">Home</a></li>
@@ -996,7 +1029,8 @@
                     <li><a href="contact.html">Contact Us</a></li>
                 </ul>
             </nav>
-            <div class="auth-buttons">
+            <!-- Logged Out State -->
+            <div id="authLinks" style="gap: 10px;">
                 <a href="login.html" class="btn btn-outline">Log In</a>
                 <a href="login.html#signup" class="btn btn-primary">Sign Up</a>
             </div>
@@ -1413,21 +1447,11 @@
                 <div class="footer-column">
                     <h3>Resources</h3>
                     <ul>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">Safety Guidelines</a></li>
-                        <li><a href="#">Worker Resources</a></li>
-                        <li><a href="#">Customer Resources</a></li>
-                        <li><a href="#">Community</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Legal</h3>
-                    <ul>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Worker Agreement</a></li>
-                        <li><a href="#">Cookie Policy</a></li>
-                        <li><a href="#">GDPR Compliance</a></li>
+                        <li><a href="help.html">Help Center</a></li>
+                        <li><a href="safety.html">Safety Guidelines</a></li>
+                        <li><a href="worker-resources.html">Worker Resources</a></li>
+                        <li><a href="customer-resources.html">Customer Resources</a></li>
+                        <li><a href="community.html">Community</a></li>
                     </ul>
                 </div>
             </div>
