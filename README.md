@@ -1,8 +1,5 @@
 # TrustyHands - Premium Home Services Platform
 
-![TrustyHands Banner](https://via.placeholder.com/1200x400?text=TrustyHands+Home+Services)
-*(Replace with actual screenshot if available)*
-
 **Live Demo:** [https://trustyhands-vibecraft.onrender.com](https://trustyhands-vibecraft.onrender.com)
 
 ## 📖 Project Overview
