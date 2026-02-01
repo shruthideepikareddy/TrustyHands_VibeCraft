@@ -2,6 +2,8 @@
 
 **Live Demo:** [https://trustyhands-vibecraft.onrender.com](https://trustyhands-vibecraft.onrender.com)
 
+**Video Explanation:** [Watch Project Demo](https://drive.google.com/file/d/1fiAWaLlj8AMM6FRUS05EL6YWRNpIEfRe/view?usp=sharing)
+
 ## 📖 Project Overview
 **TrustyHands** is a comprehensive full-stack web application designed to connect homeowners with skilled local service professionals. Whether it's plumbing, cleaning, or electrical repairs, TrustyHands offers a seamless, secure, and user-friendly platform to book reliable help in just a few clicks.
 

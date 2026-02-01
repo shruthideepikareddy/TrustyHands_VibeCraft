@@ -1145,16 +1145,33 @@
             color: var(--primary);
         }
 
-        #authLinks,
+        #authLinks {
+            display: flex;
+        }
+
         #userProfile {
             display: none;
         }
+
+        /* Predictive State: If 'is-logged-in' class is on html tag, flip visibility */
+        html.is-logged-in #authLinks {
+            display: none !important;
+        }
+
+        html.is-logged-in #userProfile {
+            display: flex !important;
+        }
     </style>
     <script>
-        // Anti-flicker logic: Apply predictive UI state immediately
+        // Safe Anti-flicker: Apply state class to root element immediately
         (function () {
-            const loggedIn = localStorage.getItem('th_logged_in') === 'true';
-            document.write('<style>#authLinks { display: ' + (loggedIn ? 'none' : 'flex') + ' !important; } #userProfile { display: ' + (loggedIn ? 'flex' : 'none') + ' !important; }</style>');
+            try {
+                if (localStorage.getItem('th_logged_in') === 'true') {
+                    document.documentElement.classList.add('is-logged-in');
+                }
+            } catch (e) {
+                console.warn('Storage access prevented');
+            }
         })();
     </script>
 </head>
@@ -1781,6 +1798,18 @@
 
                 // Set user initials and name
                 const initials = (user.firstName ? user.firstName.charAt(0) : 'U').toUpperCase();
+                /* REMOVED PREMATURE ELSE
+                    // Not logged in: Ensure UI reflects Guest state
+                    document.documentElement.classList.remove('is-logged-in'); // Clear predictive class if session failed
+                    const profileContainer = document.getElementById('userProfile');
+                    const authLinks = document.getElementById('authLinks');
+    
+                    if (profileContainer) profileContainer.style.display = 'none';
+                    if (authLinks) authLinks.style.display = 'flex';
+    
+                    // Clear any stale local storage
+                    localStorage.removeItem('th_logged_in');
+                */
 
                 const userInitialsEl = document.getElementById('userInitials');
                 const dropdownInitialsEl = document.getElementById('dropdownInitials');
@@ -1800,6 +1829,10 @@
                     applyHeaderAvatar(user.profileImage, user.firstName);
                 }
             } else {
+                // User is NOT logged in: Cleanup any stale state
+                document.documentElement.classList.remove('is-logged-in');
+                localStorage.removeItem('th_logged_in');
+
                 // User is NOT logged in
                 const profileContainer = document.getElementById('userProfile');
                 const authLinks = document.getElementById('authLinks');

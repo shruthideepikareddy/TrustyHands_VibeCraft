@@ -55,113 +55,132 @@ async function logout() {
     }
 }
 
-// Update user display in header (if exists)
+// Update user display in header (Global Handler)
 function updateUserDisplay(user) {
-    const userNameElement = document.getElementById('user-name');
-    if (userNameElement && user) {
-        userNameElement.textContent = user.firstName;
+    if (!user) return;
+
+    // 1. Update Text Elements
+    const elements = {
+        'welcomeUserName': user.firstName || 'User',
+        'userName': user.firstName + (user.lastName ? ' ' + user.lastName : ''),
+        'userEmail': user.email,
+        'userInitials': (user.firstName ? user.firstName.charAt(0) : 'U').toUpperCase(),
+        'dropdownInitials': (user.firstName ? user.firstName.charAt(0) : 'U').toUpperCase()
+    };
+
+    for (const [id, value] of Object.entries(elements)) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
     }
 
-    // Also try to reflect avatar image and initials in any header avatar elements if present
-    (async () => {
-        try {
-            const resp = await fetch('/api/auth/profile', { credentials: 'include' });
-            const profile = await resp.json();
-            if (profile && profile.success && profile.user) {
-                applyHeaderAvatar(profile.user.profileImage, profile.user.firstName);
-            }
-        } catch (e) {
-            // ignore avatar update failures on pages without header
-        }
-    })();
+    // 2. Manage Visibility
+    const profileContainer = document.getElementById('userProfile');
+    const authLinks = document.getElementById('authLinks');
+
+    if (profileContainer) profileContainer.style.display = 'flex';
+    if (authLinks) authLinks.style.display = 'none';
+
+    // 3. Update Avatar (Image or Initials)
+    applyHeaderAvatar(user.profileImage, user.firstName);
 }
 
-// Helper: apply avatar image to header elements if they exist
 // Helper: apply avatar image to header elements if they exist
 function applyHeaderAvatar(avatarUrl, firstName = '') {
     const profileCircle = document.getElementById('profileToggle');
-    const userInitials = document.getElementById('userInitials');
     const dropdownInitials = document.getElementById('dropdownInitials');
-    const initials = (firstName ? firstName.charAt(0) : 'U').toUpperCase();
 
+    // Logic to set image background
     const setAvatar = (url) => {
         if (profileCircle) {
             profileCircle.style.backgroundImage = `url('${url}')`;
-            profileCircle.style.backgroundSize = 'cover';
-            profileCircle.style.backgroundPosition = 'center';
+            profileCircle.innerText = ''; // Clear initials if image loaded
         }
         if (dropdownInitials) {
             dropdownInitials.style.backgroundImage = `url('${url}')`;
-            dropdownInitials.style.backgroundSize = 'cover';
-            dropdownInitials.style.backgroundPosition = 'center';
-            dropdownInitials.textContent = '';
-        }
-        if (userInitials) {
-            userInitials.textContent = '';
+            dropdownInitials.innerText = '';
         }
     };
 
-    const setInitials = () => {
-        if (profileCircle) profileCircle.style.backgroundImage = ''; // Revert to CSS gradient
-        if (dropdownInitials) {
-            dropdownInitials.style.backgroundImage = '';
-            dropdownInitials.textContent = initials;
-        }
-        if (userInitials) userInitials.textContent = initials;
+    // Logic to clear image and show initials (handled by CSS background removal + text content)
+    const clearAvatar = () => {
+        if (profileCircle) profileCircle.style.backgroundImage = '';
+        if (dropdownInitials) dropdownInitials.style.backgroundImage = '';
     };
 
     if (avatarUrl) {
-        // Try to load image first
         const img = new Image();
-        img.onload = () => {
-            setAvatar(avatarUrl);
-        };
-        img.onerror = () => {
-            // Fallback to initials if image fails
-            console.warn('Avatar failed to load:', avatarUrl);
-            setInitials();
-        };
+        img.onload = () => setAvatar(avatarUrl);
+        img.onerror = () => clearAvatar();
         img.src = avatarUrl;
     } else {
-        setInitials();
+        clearAvatar();
     }
 }
 
-// Auto-apply header avatar on DOM ready across pages that include this script
+// Auto-run: Check auth state and update UI globally on all pages
 (function () {
-    async function fetchAndApplyAvatar() {
+    async function initGlobalAuth() {
         try {
-            // 1) Apply cached avatar immediately to avoid flicker/shift
-            const cached = localStorage.getItem('th_avatar_url');
-            if (cached) {
-                applyHeaderAvatar(cached);
-            }
+            // 1. Predictive UI: Apply cached name immediately to prevent "Welcome, User" flicker
+            try {
+                const cachedName = localStorage.getItem('th_first_name');
+                const cachedEmail = localStorage.getItem('th_user_email'); // Optional helper
+                const cachedAvatar = localStorage.getItem('th_avatar_url');
+                const loggedIn = localStorage.getItem('th_logged_in') === 'true';
 
-            // 2) Fetch latest profile and update avatar/cache
-            const resp = await fetch('/api/auth/profile', { credentials: 'include' });
-            const profile = await resp.json();
-
-            if (profile && profile.success && profile.user) {
-                const url = profile.user.profileImage;
-                const firstName = profile.user.firstName;
-
-                if (url) {
-                    localStorage.setItem('th_avatar_url', url);
-                    applyHeaderAvatar(url, firstName);
-                } else {
-                    localStorage.removeItem('th_avatar_url');
-                    applyHeaderAvatar(null, firstName);
+                if (cachedName && loggedIn) {
+                    // Construct a partial user object for instant render
+                    const partialUser = {
+                        firstName: cachedName,
+                        email: cachedEmail || '',
+                        profileImage: cachedAvatar,
+                        lastName: '' // We might not have this cached, but first name is key
+                    };
+                    updateUserDisplay(partialUser);
                 }
+            } catch (e) { /* ignore storage errors */ }
+
+            // 2. Fetch fresh session/profile data (The Source of Truth)
+            const resp = await fetch('/api/auth/session', { credentials: 'include' });
+            const data = await resp.json();
+
+            if (data.authenticated && data.user) {
+                // Update Cache
+                localStorage.setItem('th_first_name', data.user.firstName);
+                if (data.user.email) localStorage.setItem('th_user_email', data.user.email);
+
+                // If logged in, update the entire header UI with authoritative data
+                updateUserDisplay(data.user);
+
+                // Secondary fetch for full profile (avatar) if needed
+                if (!data.user.profileImage) {
+                    const profResp = await fetch('/api/auth/profile', { credentials: 'include' });
+                    const profData = await profResp.json();
+                    if (profData.success) {
+                        // Update cache and UI again with full details
+                        localStorage.setItem('th_first_name', profData.user.firstName);
+                        if (profData.user.profileImage) {
+                            localStorage.setItem('th_avatar_url', profData.user.profileImage);
+                        }
+                        updateUserDisplay(profData.user);
+                    }
+                }
+            } else {
+                // Not authenticated: Clear sensitive predictive cache
+                localStorage.removeItem('th_logged_in');
+                localStorage.removeItem('th_first_name');
+                localStorage.removeItem('th_avatar_url');
+                localStorage.removeItem('th_user_email');
             }
         } catch (e) {
-            // ignore if not logged in
+            // Not logged in or error, do nothing (default UI stays)
         }
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', fetchAndApplyAvatar);
+        document.addEventListener('DOMContentLoaded', initGlobalAuth);
     } else {
-        fetchAndApplyAvatar();
+        initGlobalAuth();
     }
 })();
 
