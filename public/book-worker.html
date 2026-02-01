@@ -1273,7 +1273,7 @@
 
                 allWorkers = [...allWorkers, ...filteredLocal];
 
-                renderWorkers(allWorkers);
+                renderWorkers(allWorkers, service);
                 goToStep(4);
             } catch (err) {
                 alert('Error: ' + err.message);
@@ -1283,7 +1283,7 @@
             }
         }
 
-        function renderWorkers(workers) {
+        function renderWorkers(workers, serviceName) {
             const container = document.getElementById('workersList');
             container.innerHTML = '';
 
@@ -1292,7 +1292,7 @@
                     <div style="text-align: center; padding: 40px; border: 1px dashed var(--border); border-radius: 15px; width: 100%;">
                         <i class="fas fa-user-slash" style="font-size: 2.5rem; color: #ddd; margin-bottom: 15px; display: block;"></i>
                         <h4 style="color: var(--primary-dark); margin-bottom: 8px;">No Professionals Found</h4>
-                        <p style="font-size: 0.9rem; color: var(--text-light); line-height: 1.4;">We couldn't find any approved workers for <strong>${service}</strong> at the moment.<br>
+                        <p style="font-size: 0.9rem; color: var(--text-light); line-height: 1.4;">We couldn't find any approved workers for <strong>${serviceName || 'this service'}</strong> at the moment.<br>
                         Please ensure you have <strong>approved</strong> a worker with this skill in the admin panel.</p>
                     </div>
                 `;
