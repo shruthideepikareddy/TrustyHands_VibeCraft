@@ -553,7 +553,7 @@
             if (user) {
                 // Determine user type (simple redirect for now)
                 // In a real app we might check if user is worker or customer
-                window.location.href = '/home.html';
+                localStorage.setItem('th_logged_in', 'true'); window.location.href = '/home.html';
             }
         });
 
@@ -608,7 +608,7 @@
             const result = await api.post('/api/auth/register', data);
 
             if (result.success) {
-                window.location.href = '/home.html';
+                localStorage.setItem('th_logged_in', 'true'); window.location.href = '/home.html';
             } else {
                 showErrors(result.errors);
                 submitBtn.value = originalVal;
@@ -654,7 +654,7 @@
             const result = await api.post('/api/auth/login', data);
 
             if (result.success) {
-                window.location.href = '/home.html';
+                localStorage.setItem('th_logged_in', 'true'); window.location.href = '/home.html';
             } else {
                 showErrors(result.errors);
                 submitBtn.value = originalVal;

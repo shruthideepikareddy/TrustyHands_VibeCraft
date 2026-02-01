@@ -17,9 +17,9 @@ router.post('/register', uploadWorkerFiles, async (req, res) => {
         } = req.body;
 
         // Validate required fields
-        if (!full_name || !phone || !email || !dob || !gender || !location ||
-            !service_type || !experience || !languages || !available_hours ||
-            !min_price_per_hour || !max_price_per_hour) {
+        if (!full_name || !phone || !email || !location ||
+            !service_type || !experience ||
+            !min_price_per_hour) {
             return res.status(400).json({
                 success: false,
                 error: 'Please fill all required fields'
@@ -45,17 +45,17 @@ router.post('/register', uploadWorkerFiles, async (req, res) => {
             full_name,
             phone_number: phone,
             email,
-            dob,
-            gender,
+            dob: dob || new Date(),
+            gender: gender || 'Other',
             location,
             id_proof_path,
             service_type,
             experience: parseInt(experience),
             skills: skills || '',
-            languages,
-            available_hours,
+            languages: languages || 'English',
+            available_hours: available_hours || '9 AM - 6 PM',
             min_price_per_hour: parseFloat(min_price_per_hour),
-            max_price_per_hour: parseFloat(max_price_per_hour),
+            max_price_per_hour: parseFloat(max_price_per_hour || min_price_per_hour),
             resume_path,
             profile_picture_path,
             work_samples_path,
@@ -99,9 +99,9 @@ router.get('/search', async (req, res) => {
         }
 
         const workers = await Worker.find({
-            service_type: service,
-            location: new RegExp(city, 'i'), // Case-insensitive search
-            status: 'Approved' // Only show approved workers to customers
+            service_type: new RegExp(`^${service}$`, 'i'), // Case-insensitive exact match
+            location: new RegExp(city, 'i'), // Case-insensitive partial match
+            status: 'approved' // Only show approved workers
         });
 
         res.json({
@@ -217,6 +217,69 @@ router.get('/:id', async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Server error fetching worker'
+        });
+    }
+});
+
+// @route   GET /api/workers
+// @desc    Get all workers (with optional status filter)
+// @access  Public (Should be Admin)
+router.get('/', async (req, res) => {
+    try {
+        const { status } = req.query;
+        const query = {};
+        if (status) query.status = status;
+
+        const workers = await Worker.find(query).sort({ created_at: -1 });
+
+        res.json({
+            success: true,
+            workers
+        });
+    } catch (error) {
+        console.error('Get all workers error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Server error fetching workers'
+        });
+    }
+});
+
+// @route   PUT /api/workers/:id/status
+// @desc    Update worker status
+// @access  Public (Should be Admin)
+router.put('/:id/status', async (req, res) => {
+    try {
+        const { status } = req.body;
+        if (!['pending', 'approved', 'rejected'].includes(status)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid status'
+            });
+        }
+
+        const worker = await Worker.findByIdAndUpdate(
+            req.params.id,
+            { status },
+            { new: true }
+        );
+
+        if (!worker) {
+            return res.status(404).json({
+                success: false,
+                error: 'Worker not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            worker
+        });
+    } catch (error) {
+        console.error('Update status error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Server error updating status'
         });
     }
 });

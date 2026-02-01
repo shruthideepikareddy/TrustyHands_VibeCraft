@@ -692,19 +692,18 @@
 
         async function refreshData() {
             try {
-                const response = await fetch('/api/workers/pending');
-                const data = await response.json();
+                // Fetch pending workers from API
+                const pResp = await fetch('/api/workers?status=pending');
+                const pData = await pResp.json();
+                const pending = pData.workers || [];
 
-                if (!data.success) throw new Error(data.error);
+                // Fetch approved workers from API (for count)
+                const aResp = await fetch('/api/workers?status=approved');
+                const aData = await aResp.json();
+                const approved = aData.workers || [];
 
-                const pending = data.workers;
-
-                // For "Total Professionals", we could fetch from another endpoint
-                // For now, let's just update the pending count
                 document.getElementById('pendingCount').textContent = pending.length;
-
-                // Fetch approved count if needed, or just keep as is for now
-                // document.getElementById('approvedCount').textContent = ...;
+                document.getElementById('approvedCount').textContent = approved.length;
 
                 const tbody = document.getElementById('workerTableBody');
                 const empty = document.getElementById('emptyState');
@@ -719,11 +718,12 @@
                 empty.style.display = 'none';
                 table.style.display = 'block';
 
-                tbody.innerHTML = pending.map(w => `
+                tbody.innerHTML = pending.map(w => {
+                    return `
                     <tr id="row-${w._id}">
                         <td>
                             <div class="worker-pill">
-                                <img src="${w.profile_picture_path ? '/' + w.profile_picture_path.replace(/\\/g, '/') : 'https://via.placeholder.com/50'}" class="worker-img">
+                                <img src="${w.profile_picture_path ? '/' + w.profile_picture_path.replace(/\\/g, '/') : 'https://via.placeholder.com/50'}" class="worker-img" onerror="this.src='https://via.placeholder.com/50'">
                                 <div>
                                     <div style="font-weight: 700;">${w.full_name}</div>
                                     <div style="font-size: 0.8rem; color: #888;">${w.email}</div>
@@ -731,7 +731,7 @@
                             </div>
                         </td>
                         <td><span class="status-badge" style="background: rgba(96, 108, 56, 0.1); color: var(--primary);">${w.service_type}</span></td>
-                        <td>${w.experience}y</td>
+                        <td>${w.experience || '0'} Yrs</td>
                         <td>
                             <i class="fas fa-map-marker-alt" style="color:var(--accent)"></i> ${w.location || 'N/A'}
                         </td>
@@ -742,28 +742,30 @@
                             <button class="btn-action btn-reject" onclick="rejectWorker('${w._id}')">Reject</button>
                         </td>
                     </tr>
-                `).join('');
+                `}).join('');
             } catch (err) {
-                console.error("Refresh error:", err);
+                console.error("Error refreshing data:", err);
             }
         }
 
         async function approveWorker(id) {
             try {
-                const response = await fetch(`/api/workers/${id}/approve`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' }
+                const res = await fetch(`/api/workers/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'approved' })
                 });
-                const data = await response.json();
+                const data = await res.json();
 
                 if (data.success) {
                     alert(`✅ Success: Worker approved!`);
                     refreshData();
                 } else {
-                    alert('Error: ' + data.error);
+                    alert(`Error: ${data.error}`);
                 }
-            } catch (err) {
-                alert('Connection error during approval');
+            } catch (e) {
+                console.error(e);
+                alert("Failed to approve worker.");
             }
         }
 
@@ -771,19 +773,21 @@
             if (!confirm("Reject this application?")) return;
 
             try {
-                const response = await fetch(`/api/workers/${id}`, {
-                    method: 'DELETE'
+                const res = await fetch(`/api/workers/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'rejected' })
                 });
-                const data = await response.json();
-
+                const data = await res.json();
                 if (data.success) {
-                    alert(`❌ Rejected: Application removed.`);
+                    alert(`❌ Rejected: Application status updated.`);
                     refreshData();
                 } else {
-                    alert('Error: ' + data.error);
+                    alert(`Error: ${data.error}`);
                 }
-            } catch (err) {
-                alert('Connection error during rejection');
+            } catch (e) {
+                console.error(e);
+                alert("Failed to reject worker.");
             }
         }
 
@@ -821,66 +825,6 @@
                 }
             });
         });
-
-        // --- Dev Tools: Seed Data ---
-        function seedData() {
-            const mock = [
-                {
-                    id: 'dev-' + Date.now(),
-                    name: 'Rohan Sharma',
-                    email: 'rohan.s@example.com',
-                    service: 'Plumbing Services',
-                    exp: '5-10 Years (Expert)',
-                    city: 'Mumbai',
-                    locality: 'Andheri West',
-                    pincode: '400053',
-                    rate: '450',
-                    photo: 'https://randomuser.me/api/portraits/men/32.jpg',
-                    status: 'pending'
-                },
-                {
-                    id: 'dev-' + (Date.now() + 1),
-                    name: 'Priya Patel',
-                    email: 'priya.p@example.com',
-                    service: 'Deep Cleaning',
-                    exp: '2-5 Years (Professional)',
-                    city: 'Ahmedabad',
-                    locality: 'Navrangpura',
-                    pincode: '380009',
-                    rate: '300',
-                    photo: 'https://randomuser.me/api/portraits/women/44.jpg',
-                    status: 'pending'
-                }
-            ];
-
-            let current = JSON.parse(localStorage.getItem('pendingWorkers') || '[]');
-            // Avoid dupes if already seeded
-            if (current.length === 0) {
-                localStorage.setItem('pendingWorkers', JSON.stringify(mock));
-                refreshData();
-                alert('Test data generated! You should see 2 applications now.');
-            } else {
-                if (confirm('You already have pending applications. Add mock data anyway?')) {
-                    localStorage.setItem('pendingWorkers', JSON.stringify([...current, ...mock]));
-                    refreshData();
-                }
-            }
-        }
-
-        // Add Seed Button to Header
-        const headerBtnConfig = document.querySelector('.section-card .table-header');
-        if (headerBtnConfig) {
-            const seedBtn = document.createElement('button');
-            seedBtn.className = 'btn-action';
-            seedBtn.style.background = '#e0f7fa';
-            seedBtn.style.color = '#006064';
-            seedBtn.style.marginRight = '10px';
-            seedBtn.innerHTML = '<i class="fas fa-database"></i> Generate Test Data';
-            seedBtn.onclick = seedData;
-
-            // Insert before Refresh button
-            headerBtnConfig.insertBefore(seedBtn, headerBtnConfig.lastElementChild);
-        }
     </script>
 </body>
 

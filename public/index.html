@@ -80,7 +80,6 @@
             letter-spacing: 0.5px;
             text-decoration: none;
             flex-shrink: 0;
-            order: 1;
         }
 
         .logo i {
@@ -92,7 +91,6 @@
             flex: 1;
             display: flex;
             justify-content: center;
-            order: 2;
         }
 
         nav ul {
@@ -140,7 +138,6 @@
             gap: 10px;
             align-items: center;
             flex-shrink: 0;
-            order: 3;
         }
 
         .welcome-message {
@@ -1029,10 +1026,57 @@
                     <li><a href="contact.html">Contact Us</a></li>
                 </ul>
             </nav>
-            <!-- Logged Out State -->
-            <div id="authLinks" style="gap: 10px;">
-                <a href="login.html" class="btn btn-outline">Log In</a>
-                <a href="login.html#signup" class="btn btn-primary">Sign Up</a>
+            <!-- Auth Section -->
+            <div class="auth-buttons">
+                <!-- Logged In State -->
+                <div class="user-profile-container" id="userProfile" style="display: none;">
+                    <div class="welcome-message">
+                        <span class="welcome-text">Welcome,</span>
+                        <span class="username" id="welcomeUserName">User</span>
+                    </div>
+                    <div class="profile-circle" id="profileToggle">
+                        <span id="userInitials">U</span>
+                    </div>
+
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <div class="user-info">
+                            <div class="info-initials" id="dropdownInitials">
+                                U
+                            </div>
+                            <div class="info-text">
+                                <div class="name" id="userName">User Name</div>
+                                <div class="email" id="userEmail">email@example.com</div>
+                            </div>
+                        </div>
+
+                        <ul>
+                            <li>
+                                <a href="home.html">
+                                    <i class="fas fa-th-large"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="profile.html">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span>Your Profile</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" onclick="logout(); return false;">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Logged Out State -->
+                <div id="authLinks" style="display: none; gap: 10px;">
+                    <a href="login.html" class="btn btn-outline">Log In</a>
+                    <a href="login.html#signup" class="btn btn-primary">Sign Up</a>
+                </div>
             </div>
         </div>
     </header>
@@ -1561,9 +1605,7 @@
     <script src="/js/auth-check.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            // Check auth (false = not protected, just check status)
             const user = await checkAuth(false);
-            const modals = document.querySelectorAll(".trigger-modal");
             const modal = document.getElementById("loginModal");
             const closeBtn = document.querySelector(".close");
 
@@ -1579,18 +1621,36 @@
                 }
             }
 
+            // Sync UI state based on auth
+            const profileContainer = document.getElementById('userProfile');
+            const authLinks = document.getElementById('authLinks');
+
             if (user) {
-                // User is logged in
-                // 1. Change "Log In/Sign Up" to "Dashboard"
-                const authButtons = document.querySelector('.auth-buttons');
-                if (authButtons) {
-                    authButtons.innerHTML = `
-                        <a href="home.html" class="btn btn-primary">Dashboard</a>
-                        <a href="#" onclick="logout(); return false;" class="btn btn-outline" style="margin-left: 10px;">Logout</a>
-                    `;
+                if (profileContainer) profileContainer.style.display = 'flex';
+                if (authLinks) authLinks.style.display = 'none';
+
+                // Set user initials and name
+                const initials = (user.firstName ? user.firstName.charAt(0) : 'U').toUpperCase();
+                const userInitialsEl = document.getElementById('userInitials');
+                const dropdownInitialsEl = document.getElementById('dropdownInitials');
+                const userNameEl = document.getElementById('userName');
+                const userEmailEl = document.getElementById('userEmail');
+                const welcomeUserNameEl = document.getElementById('welcomeUserName');
+
+                if (userInitialsEl) userInitialsEl.textContent = initials;
+                if (dropdownInitialsEl) dropdownInitialsEl.textContent = initials;
+                const fullName = user.firstName + (user.lastName ? ' ' + user.lastName : '');
+                if (userNameEl) userNameEl.textContent = fullName;
+                if (userEmailEl) userEmailEl.textContent = user.email;
+                if (welcomeUserNameEl) welcomeUserNameEl.textContent = user.firstName || 'User';
+
+                // Apply avatar immediately if available
+                if (user.profileImage && typeof applyHeaderAvatar === 'function') {
+                    applyHeaderAvatar(user.profileImage, user.firstName);
                 }
 
-                // 2. Change interaction for "Find a Worker" / "Join as Worker" buttons
+                // Interaction for "Find a Worker" / "Join as Worker" buttons for logged in users
+                const modals = document.querySelectorAll(".trigger-modal");
                 modals.forEach(btn => {
                     btn.onclick = function (e) {
                         e.preventDefault();
@@ -1599,14 +1659,15 @@
                             window.location.href = 'book-worker.html';
                         } else if (text.includes('join')) {
                             window.location.href = 'join-worker.html';
-                        } else {
-                            window.location.href = 'home.html';
                         }
                     };
                 });
             } else {
-                // User is NOT logged in
-                // Bind buttons to open modal
+                if (profileContainer) profileContainer.style.display = 'none';
+                if (authLinks) authLinks.style.display = 'flex';
+
+                // Bind buttons to open modal for logged out users
+                const modals = document.querySelectorAll(".trigger-modal");
                 modals.forEach(btn => {
                     btn.addEventListener("click", (e) => {
                         e.preventDefault();

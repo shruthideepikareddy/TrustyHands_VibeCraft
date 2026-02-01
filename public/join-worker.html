@@ -1018,22 +1018,26 @@
                     return;
                 }
 
-                subBtn.disabled = true;
-                subBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+                submit.disabled = true;
+                const originalBtnText = submit.innerHTML;
+                submit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
 
-                // Prepare FormData for Backend
+                // Prepare Data for Backend
                 const formData = new FormData();
                 formData.append('full_name', document.getElementById('fName').value);
                 formData.append('phone', document.getElementById('fPhone').value);
                 formData.append('email', document.getElementById('fEmail').value);
                 formData.append('gender', document.getElementById('fGender').value);
-                formData.append('location', `${document.getElementById('fLocality').value}, ${document.getElementById('fCity').value} - ${document.getElementById('fPincode').value}`);
+                formData.append('location', `${document.getElementById('fLocality').value}, ${document.getElementById('fCity').value} ${document.getElementById('fPincode').value}`);
 
                 formData.append('service_type', document.getElementById('fService').value);
 
                 // Parse experience to number
                 const expVal = document.getElementById('fExp').value;
-                const expNum = parseInt(expVal) || 0;
+                let expNum = 1;
+                if (expVal.includes('2-5')) expNum = 3;
+                else if (expVal.includes('5-10')) expNum = 7;
+                else if (expVal.includes('10+')) expNum = 12;
                 formData.append('experience', expNum);
 
                 formData.append('min_price_per_hour', document.getElementById('fRate').value);
@@ -1041,8 +1045,8 @@
                 formData.append('skills', document.getElementById('fBio').value); // Using bio as skills/description
 
                 // Files
-                formData.append('id_proof', idFile);
-                formData.append('profile_picture', faceFile);
+                if (idFile) formData.append('id_proof', idFile);
+                if (faceFile) formData.append('profile_picture', faceFile);
 
                 // Agreements (Backend expects 'true' or true)
                 formData.append('agreement', 'true');
@@ -1060,7 +1064,7 @@
 
                 const result = await response.json();
 
-                if (!response.ok) {
+                if (!response.ok || !result.success) {
                     throw new Error(result.error || 'Server error during registration');
                 }
 
@@ -1075,11 +1079,15 @@
                 document.getElementById('universalHome').style.display = 'none';
 
                 window.scrollTo(0, 0);
+
+                // Clear localStorage logic (optional)
+                localStorage.removeItem('worker_temp_store');
+
             } catch (err) {
                 console.error("Submission error details:", err);
                 alert("Submission failed: " + err.message);
-                subBtn.disabled = false;
-                subBtn.innerHTML = originalBtnText;
+                submit.disabled = false;
+                submit.innerHTML = '<i class="fas fa-check-circle"></i> Submit Application';
             }
         };
 
