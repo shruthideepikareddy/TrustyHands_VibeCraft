@@ -100,7 +100,8 @@ router.get('/search', async (req, res) => {
 
         const workers = await Worker.find({
             service_type: service,
-            location: new RegExp(city, 'i') // Case-insensitive search
+            location: new RegExp(city, 'i'), // Case-insensitive search
+            status: 'Approved' // Only show approved workers to customers
         });
 
         res.json({
@@ -116,9 +117,86 @@ router.get('/search', async (req, res) => {
     }
 });
 
-// @route   GET /api/workers/:id
-// @desc    Get worker details by ID
+// @route   GET /api/workers/pending
+// @desc    Get all pending worker applications (Admin only)
+// @access  Public (Should be Private/Admin but keeping simple for now)
+router.get('/pending', async (req, res) => {
+    try {
+        const workers = await Worker.find({ status: 'Pending' }).sort({ created_at: -1 });
+        res.json({
+            success: true,
+            workers
+        });
+    } catch (error) {
+        console.error('Get pending workers error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Server error fetching pending applications'
+        });
+    }
+});
+
+// @route   PATCH /api/workers/:id/approve
+// @desc    Approve a worker application
 // @access  Public
+router.patch('/:id/approve', async (req, res) => {
+    try {
+        const worker = await Worker.findByIdAndUpdate(
+            req.params.id,
+            { status: 'Approved' },
+            { new: true }
+        );
+
+        if (!worker) {
+            return res.status(404).json({
+                success: false,
+                error: 'Worker not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Worker approved successfully!',
+            worker
+        });
+    } catch (error) {
+        console.error('Approve worker error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Server error during approval'
+        });
+    }
+});
+
+// @route   DELETE /api/workers/:id
+// @desc    Reject/Delete a worker application
+// @access  Public
+router.delete('/:id', async (req, res) => {
+    try {
+        const worker = await Worker.findByIdAndDelete(req.params.id);
+
+        if (!worker) {
+            return res.status(404).json({
+                success: false,
+                error: 'Worker not found'
+            });
+        }
+
+        // Optional: Could delete uploaded files here too
+
+        res.json({
+            success: true,
+            message: 'Application rejected and removed.'
+        });
+    } catch (error) {
+        console.error('Delete worker error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Server error during rejection'
+        });
+    }
+});
+
 router.get('/:id', async (req, res) => {
     try {
         const worker = await Worker.findById(req.params.id);

@@ -257,9 +257,19 @@
         }
 
         .upload-zone i {
-            font-size: 2.5rem;
+            font-size: 1.5rem;
             color: var(--primary);
-            margin-bottom: 15px;
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+
+        .preview-img {
+            max-width: 100%;
+            max-height: 120px;
+            border-radius: 10px;
+            display: none;
+            margin-bottom: 10px;
+            object-fit: contain;
         }
 
         .btn-row {
@@ -687,17 +697,19 @@
                             <div class="form-group">
                                 <label>Identity Proof (ID Card)</label>
                                 <div class="upload-zone" onclick="document.getElementById('idUp').click()">
-                                    <i class="fas fa-id-badge"></i>
+                                    <img id="idPreview" class="preview-img">
+                                    <i class="fas fa-id-badge" id="idIcon"></i>
                                     <p id="idName">Click to upload ID photo</p>
-                                    <input type="file" id="idUp" style="display:none">
+                                    <input type="file" id="idUp" style="display:none" accept="image/*">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label>Profile Photo</label>
                                 <div class="upload-zone" onclick="document.getElementById('faceUp').click()">
-                                    <i class="fas fa-camera"></i>
+                                    <img id="facePreview" class="preview-img">
+                                    <i class="fas fa-camera" id="faceIcon"></i>
                                     <p id="faceName">Professional face photo</p>
-                                    <input type="file" id="faceUp" style="display:none">
+                                    <input type="file" id="faceUp" style="display:none" accept="image/*">
                                 </div>
                             </div>
                         </div>
@@ -721,6 +733,52 @@
                             <i class="fas fa-check-circle"></i></button>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <!-- Pending Review Segment -->
+        <div id="pendingReview" style="display: none; animation: fadeIn 0.5s ease;">
+            <div class="onboarding-card" style="text-align: center; padding: 60px 40px;">
+                <div class="status-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h1 style="font-size: 2.2rem; color: var(--primary-dark); margin-bottom: 15px;">Application Under Review
+                </h1>
+                <p style="color: var(--text-light); font-size: 1.1rem; max-width: 600px; margin: 0 auto 40px;">
+                    Thanks for applying, <span id="pName"
+                        style="color: var(--primary); font-weight: 700;">Worker</span>!
+                    Our team is currently verifying your documents. This usually takes less than 24 hours.
+                </p>
+
+                <div class="progress-box">
+                    <div class="progress-line done">
+                        <div class="p-dot"></div>
+                        <div>
+                            <strong>Form Submitted</strong>
+                            <p style="font-size: 0.8rem; color: #888;">Complete</p>
+                        </div>
+                    </div>
+                    <div class="progress-line active">
+                        <div class="p-dot"></div>
+                        <div>
+                            <strong>Document Verification</strong>
+                            <p style="font-size: 0.8rem; color: #888;">In Progress...</p>
+                        </div>
+                    </div>
+                    <div class="progress-line">
+                        <div class="p-dot"></div>
+                        <div>
+                            <strong>Final Approval</strong>
+                            <p style="font-size: 0.8rem; color: #888;">Pending</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <a href="home.html" class="btn btn-prev" style="display: inline-flex; visibility: visible;">
+                        <i class="fas fa-home"></i> Back to Home
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -906,26 +964,43 @@
 
         // 2. File Previews & Handling
         document.getElementById('idUp').onchange = (e) => {
-            if (e.target.files[0]) {
-                document.getElementById('idName').textContent = e.target.files[0].name;
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('idName').textContent = file.name;
                 const reader = new FileReader();
-                reader.onload = (re) => { workerStore.idProof = re.target.result; };
-                reader.readAsDataURL(e.target.files[0]);
+                reader.onload = (re) => {
+                    workerStore.idProof = re.target.result;
+                    const preview = document.getElementById('idPreview');
+                    preview.src = re.target.result;
+                    preview.style.display = 'inline-block';
+                    document.getElementById('idIcon').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
             }
         };
         document.getElementById('faceUp').onchange = (e) => {
-            if (e.target.files[0]) {
-                document.getElementById('faceName').textContent = e.target.files[0].name;
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('faceName').textContent = file.name;
                 const reader = new FileReader();
-                reader.onload = (re) => { workerStore.photo = re.target.result; };
-                reader.readAsDataURL(e.target.files[0]);
+                reader.onload = (re) => {
+                    workerStore.photo = re.target.result;
+                    const preview = document.getElementById('facePreview');
+                    preview.src = re.target.result;
+                    preview.style.display = 'inline-block';
+                    document.getElementById('faceIcon').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
             }
         };
 
         // 3. Final Submission
-        document.getElementById('onboardingForm').onsubmit = (e) => {
+        document.getElementById('onboardingForm').onsubmit = async (e) => {
             e.preventDefault();
             console.log("Submit triggered");
+
+            const subBtn = document.getElementById('subBtn');
+            const originalBtnText = subBtn.innerHTML;
 
             try {
                 // Manual validation
@@ -943,107 +1018,83 @@
                     return;
                 }
 
-                // Prepare Data
-                const workerId = "W-" + Date.now();
-                workerStore.id = workerId;
-                workerStore.name = document.getElementById('fName').value;
-                workerStore.service = document.getElementById('fService').value;
-                workerStore.rate = document.getElementById('fRate').value;
-                workerStore.exp = document.getElementById('fExp').value;
-                workerStore.email = document.getElementById('fEmail').value;
-                workerStore.phone = document.getElementById('fPhone').value;
-                workerStore.city = document.getElementById('fCity').value;
-                workerStore.locality = document.getElementById('fLocality').value;
-                workerStore.pincode = document.getElementById('fPincode').value;
-                workerStore.bio = document.getElementById('fBio').value;
-                workerStore.status = 'pending';
+                subBtn.disabled = true;
+                subBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
 
-                console.log("Saving application for admin review...");
+                // Prepare FormData for Backend
+                const formData = new FormData();
+                formData.append('full_name', document.getElementById('fName').value);
+                formData.append('phone', document.getElementById('fPhone').value);
+                formData.append('email', document.getElementById('fEmail').value);
+                formData.append('gender', document.getElementById('fGender').value);
+                formData.append('location', `${document.getElementById('fLocality').value}, ${document.getElementById('fCity').value} - ${document.getElementById('fPincode').value}`);
 
-                // Save to localStorage with Quota Handling
-                try {
-                    const pending = JSON.parse(localStorage.getItem('pendingWorkers') || '[]');
-                    pending.push(workerStore);
-                    localStorage.setItem('pendingWorkers', JSON.stringify(pending));
-                } catch (storeErr) {
-                    if (storeErr.name === 'QuotaExceededError' || storeErr.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
-                        console.warn("Storage full, attempting to save without large images...");
-                        // Fallback: Save text data only if images are too large
-                        delete workerStore.idProof;
-                        delete workerStore.photo;
-                        const pending = JSON.parse(localStorage.getItem('pendingWorkers') || '[]');
-                        pending.push(workerStore);
-                        localStorage.setItem('pendingWorkers', JSON.stringify(pending));
-                        alert("Note: Your images were very large, so we've proceed with text details only for faster review.");
-                    } else {
-                        throw storeErr; // Re-throw if it's not a quota issue
-                    }
+                formData.append('service_type', document.getElementById('fService').value);
+
+                // Parse experience to number
+                const expVal = document.getElementById('fExp').value;
+                const expNum = parseInt(expVal) || 0;
+                formData.append('experience', expNum);
+
+                formData.append('min_price_per_hour', document.getElementById('fRate').value);
+                formData.append('max_price_per_hour', document.getElementById('fRate').value);
+                formData.append('skills', document.getElementById('fBio').value); // Using bio as skills/description
+
+                // Files
+                formData.append('id_proof', idFile);
+                formData.append('profile_picture', faceFile);
+
+                // Agreements (Backend expects 'true' or true)
+                formData.append('agreement', 'true');
+                formData.append('confirmation', 'true');
+
+                // Backend required fields that are missing in UI (sending defaults)
+                formData.append('dob', '1990-01-01'); // Mock DOB
+                formData.append('languages', 'English, Hindi'); // Mock Languages
+                formData.append('available_hours', 'Full-time (9 AM - 6 PM)'); // Mock Hours
+
+                const response = await fetch('/api/workers/register', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Server error during registration');
                 }
+
+                console.log("Registration successful:", result);
 
                 // Switch UI
                 document.getElementById('registrationPart').style.display = 'none';
                 document.getElementById('pendingReview').style.display = 'block';
 
-                const firstName = (workerStore.name || "Worker").split(' ')[0];
+                const firstName = (document.getElementById('fName').value || "Worker").split(' ')[0];
                 document.getElementById('pName').textContent = firstName;
                 document.getElementById('universalHome').style.display = 'none';
-
-                // Start Status Polling
-                startStatusPolling(workerId);
 
                 window.scrollTo(0, 0);
             } catch (err) {
                 console.error("Submission error details:", err);
-                alert("Submission failed: " + err.message + "\n\nTry using smaller images or checking your browser storage.");
+                alert("Submission failed: " + err.message);
+                subBtn.disabled = false;
+                subBtn.innerHTML = originalBtnText;
             }
         };
 
-        function startStatusPolling(id) {
-            console.log("Polling for admin approval...");
-            pollingInterval = setInterval(() => {
-                // Check Approved
-                const approved = JSON.parse(localStorage.getItem('approvedWorkers') || '[]');
-                const found = approved.find(w => w.id === id);
-                if (found) {
-                    clearInterval(pollingInterval);
-                    showStatusUpdateAlert("approved", found);
-                }
-
-                // Check Rejected
-                const rejected = JSON.parse(localStorage.getItem('rejectedWorkers') || '[]');
-                if (rejected.includes(id)) {
-                    clearInterval(pollingInterval);
-                    showStatusUpdateAlert("rejected");
-                }
-            }, 3000);
-        }
-
-        function showStatusUpdateAlert(status, data) {
-            const alertBox = document.getElementById('statusAlert');
-            alertBox.style.display = 'block';
-
-            if (status === 'approved') {
-                alertBox.style.background = '#27ae60';
-                alertBox.innerHTML = '<i class="fas fa-check-double"></i> Verified! Dashboard Unlocked.';
-                setTimeout(() => {
-                    alertBox.style.display = 'none';
-                    switchToDashboard(data);
-                }, 2000);
-            } else {
-                alertBox.style.background = '#e74c3c';
-                alertBox.innerHTML = '<i class="fas fa-times-circle"></i> Application Refused. Please contact support.';
-                setTimeout(() => location.reload(), 3000);
-            }
-        }
-
+        // Status polling and dashboard logic removed/refactored for backend integration
         function switchToDashboard(data) {
             document.getElementById('pendingReview').style.display = 'none';
             document.getElementById('expertPortal').style.display = 'block';
 
-            document.getElementById('dName').textContent = data.name.split(' ')[0];
-            document.getElementById('dFullName').textContent = data.name;
-            document.getElementById('dService').textContent = data.service;
-            if (data.photo) document.getElementById('dImg').src = data.photo;
+            document.getElementById('dName').textContent = (data.full_name || data.name || "Expert").split(' ')[0];
+            document.getElementById('dFullName').textContent = data.full_name || data.name;
+            document.getElementById('dService').textContent = data.service_type || data.service;
+            if (data.profile_picture_path) {
+                document.getElementById('dImg').src = data.profile_picture_path.startsWith('http') ?
+                    data.profile_picture_path : '/' + data.profile_picture_path.replace(/\\/g, '/');
+            }
 
             loadJobs();
             window.scrollTo(0, 0);

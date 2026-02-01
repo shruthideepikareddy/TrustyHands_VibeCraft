@@ -18,6 +18,14 @@ router.post('/', uploadImage.single('image'), async (req, res) => {
 
         // Validate required fields
         if (!full_name || !phone || !email || !address || !service || !date) {
+            console.error('Booking validation failed. Missing fields:', {
+                full_name: !!full_name,
+                phone: !!phone,
+                email: !!email,
+                address: !!address,
+                service: !!service,
+                date: !!date
+            });
             return res.status(400).json({
                 success: false,
                 error: 'Please fill all required fields'

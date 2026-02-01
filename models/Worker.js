@@ -84,6 +84,11 @@ const workerSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    status: {
+        type: String,
+        enum: ['Pending', 'Approved', 'Rejected'],
+        default: 'Pending'
+    },
     created_at: {
         type: Date,
         default: Date.now

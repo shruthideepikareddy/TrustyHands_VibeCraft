@@ -690,87 +690,100 @@
         const dateEl = document.getElementById('currentDate');
         dateEl.textContent = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
-        function refreshData() {
-            const pending = JSON.parse(localStorage.getItem('pendingWorkers') || '[]');
-            const approved = JSON.parse(localStorage.getItem('approvedWorkers') || '[]');
+        async function refreshData() {
+            try {
+                const response = await fetch('/api/workers/pending');
+                const data = await response.json();
 
-            document.getElementById('pendingCount').textContent = pending.length;
-            document.getElementById('approvedCount').textContent = approved.length;
+                if (!data.success) throw new Error(data.error);
 
-            const tbody = document.getElementById('workerTableBody');
-            const empty = document.getElementById('emptyState');
-            const table = document.getElementById('tableWrapper');
+                const pending = data.workers;
 
-            if (pending.length === 0) {
-                empty.style.display = 'block';
-                table.style.display = 'none';
-                return;
-            }
+                // For "Total Professionals", we could fetch from another endpoint
+                // For now, let's just update the pending count
+                document.getElementById('pendingCount').textContent = pending.length;
 
-            empty.style.display = 'none';
-            table.style.display = 'block';
+                // Fetch approved count if needed, or just keep as is for now
+                // document.getElementById('approvedCount').textContent = ...;
 
-            tbody.innerHTML = pending.map(w => `
-                <tr id="row-${w.id}">
-                    <td>
-                        <div class="worker-pill">
-                            <img src="${w.photo || 'https://via.placeholder.com/50'}" class="worker-img">
-                            <div>
-                                <div style="font-weight: 700;">${w.name}</div>
-                                <div style="font-size: 0.8rem; color: #888;">${w.email}</div>
+                const tbody = document.getElementById('workerTableBody');
+                const empty = document.getElementById('emptyState');
+                const table = document.getElementById('tableWrapper');
+
+                if (pending.length === 0) {
+                    empty.style.display = 'block';
+                    table.style.display = 'none';
+                    return;
+                }
+
+                empty.style.display = 'none';
+                table.style.display = 'block';
+
+                tbody.innerHTML = pending.map(w => `
+                    <tr id="row-${w._id}">
+                        <td>
+                            <div class="worker-pill">
+                                <img src="${w.profile_picture_path ? '/' + w.profile_picture_path.replace(/\\/g, '/') : 'https://via.placeholder.com/50'}" class="worker-img">
+                                <div>
+                                    <div style="font-weight: 700;">${w.full_name}</div>
+                                    <div style="font-size: 0.8rem; color: #888;">${w.email}</div>
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                    <td><span class="status-badge" style="background: rgba(96, 108, 56, 0.1); color: var(--primary);">${w.service}</span></td>
-                    <td>${w.exp || 'N/A'}</td>
-                    <td>
-                        <i class="fas fa-map-marker-alt" style="color:var(--accent)"></i> ${w.city || 'N/A'}<br>
-                        <small style="color: #888;">${w.locality || ''} ${w.pincode ? '(' + w.pincode + ')' : ''}</small>
-                    </td>
-                    <td>₹${w.rate}/hr</td>
-                    <td><a href="#" onclick="alert('Viewing Secure ID Document...')"><i class="fas fa-file-pdf"></i> View ID</a></td>
-                    <td>
-                        <button class="btn-action btn-approve" onclick="approveWorker('${w.id}')">Approve</button>
-                        <button class="btn-action btn-reject" onclick="rejectWorker('${w.id}')">Reject</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function approveWorker(id) {
-            let pending = JSON.parse(localStorage.getItem('pendingWorkers') || '[]');
-            let approved = JSON.parse(localStorage.getItem('approvedWorkers') || '[]');
-
-            const worker = pending.find(w => w.id === id);
-            if (worker) {
-                worker.status = 'approved';
-                approved.push(worker);
-                pending = pending.filter(w => w.id !== id);
-
-                localStorage.setItem('pendingWorkers', JSON.stringify(pending));
-                localStorage.setItem('approvedWorkers', JSON.stringify(approved));
-
-                alert(`✅ Success: ${worker.name} approved!`);
-                refreshData();
+                        </td>
+                        <td><span class="status-badge" style="background: rgba(96, 108, 56, 0.1); color: var(--primary);">${w.service_type}</span></td>
+                        <td>${w.experience}y</td>
+                        <td>
+                            <i class="fas fa-map-marker-alt" style="color:var(--accent)"></i> ${w.location || 'N/A'}
+                        </td>
+                        <td>₹${w.min_price_per_hour}/hr</td>
+                        <td><a href="/${w.id_proof_path.replace(/\\/g, '/')}" target="_blank"><i class="fas fa-file-pdf"></i> View ID</a></td>
+                        <td>
+                            <button class="btn-action btn-approve" onclick="approveWorker('${w._id}')">Approve</button>
+                            <button class="btn-action btn-reject" onclick="rejectWorker('${w._id}')">Reject</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error("Refresh error:", err);
             }
         }
 
-        function rejectWorker(id) {
+        async function approveWorker(id) {
+            try {
+                const response = await fetch(`/api/workers/${id}/approve`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(`✅ Success: Worker approved!`);
+                    refreshData();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (err) {
+                alert('Connection error during approval');
+            }
+        }
+
+        async function rejectWorker(id) {
             if (!confirm("Reject this application?")) return;
 
-            let pending = JSON.parse(localStorage.getItem('pendingWorkers') || '[]');
-            let rejected = JSON.parse(localStorage.getItem('rejectedWorkers') || '[]');
+            try {
+                const response = await fetch(`/api/workers/${id}`, {
+                    method: 'DELETE'
+                });
+                const data = await response.json();
 
-            const worker = pending.find(w => w.id === id);
-            if (worker) {
-                rejected.push(id);
-                pending = pending.filter(w => w.id !== id);
-
-                localStorage.setItem('pendingWorkers', JSON.stringify(pending));
-                localStorage.setItem('rejectedWorkers', JSON.stringify(rejected));
-
-                alert(`❌ Rejected: Application removed.`);
-                refreshData();
+                if (data.success) {
+                    alert(`❌ Rejected: Application removed.`);
+                    refreshData();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (err) {
+                alert('Connection error during rejection');
             }
         }
 
